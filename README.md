@@ -4,11 +4,10 @@ Modern toolchain for building [Limited Run](https://limitedrun.com/) storefront
 themes — a scaffolder plus a local dev/build CLI, in the spirit of
 `create-react-app`.
 
-It supersedes the 2014 [`limitedrun-themekit`](./limitedrun-themekit) Ruby gem
-(kept in this repo for reference). Like the gem, it renders themes **locally**
-against a mock `store.json`; unlike the gem it also scaffolds new themes, live-
-reloads on save, and packages an upload-ready zip. There is no theme API, so
-deploys are still a manual zip upload in the Limited Run admin.
+It supersedes the 2014 `limitedrun-themekit` Ruby gem. Like the gem, it renders
+themes **locally** against a mock `store.json`; unlike the gem it also scaffolds
+new themes, live-reloads on save, and packages an upload-ready zip. There is no
+theme API, so deploys are still a manual zip upload in the Limited Run admin.
 
 ## Quick start
 

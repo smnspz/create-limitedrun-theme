@@ -1,7 +1,6 @@
 dist
 node_modules
 coverage
-limitedrun-themekit
 package-lock.json
 **/fixtures/**
 **/templates/skeleton/**

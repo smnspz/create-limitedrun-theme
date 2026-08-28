@@ -1,7 +1,7 @@
 // Explicit route table: URL path -> template + per-route assigns. Mirrors the
-// gem's Sinatra routes (lib/limitedrun-themekit/server.rb) and additionally
-// wires the templates the gem shipped but never served (events, event,
-// gallery, history, search, maintenance, 404, order).
+// routes the original limitedrun-themekit gem served, and additionally wires
+// the templates it shipped but never served (events, event, gallery, history,
+// search, maintenance, 404, order).
 
 type Store = Record<string, any>;
 

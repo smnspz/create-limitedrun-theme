@@ -1,0 +1,328 @@
+{
+  "$schema": "./store.schema.json",
+  "name": "Pinna Records",
+  "url": "http://localhost:4567",
+  "mailbox": {
+    "title": "Contact"
+  },
+  "config": {},
+  "pages": [
+    {
+      "title": "News",
+      "path": "/news"
+    },
+    {
+      "title": "Artists",
+      "path": "/artists"
+    },
+    {
+      "title": "History",
+      "path": "/history"
+    },
+    {
+      "title": "Gallery",
+      "path": "/gallery"
+    },
+    {
+      "title": "Events",
+      "path": "/events"
+    },
+    {
+      "title": "Contact",
+      "path": "/contact"
+    }
+  ],
+  "categories": [
+    {
+      "name": "All",
+      "url": "/categories/all"
+    },
+    {
+      "name": "Vinyl",
+      "url": "/categories/vinyl"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Eliane Lust - Entangoed",
+      "description": "<h6>Pinna 1</h6><p>Six tangos for piano solo performed by Eliane Lust.</p>",
+      "url": "/products/entangoed",
+      "music_catalog_number": "PINNA-1",
+      "images": [
+        {
+          "url": "https://picsum.photos/seed/entangoed/600",
+          "v075_url": "https://picsum.photos/seed/entangoed/75",
+          "v200_url": "https://picsum.photos/seed/entangoed/200",
+          "v300_url": "https://picsum.photos/seed/entangoed/300",
+          "v600_url": "https://picsum.photos/seed/entangoed/600"
+        }
+      ],
+      "variations": [
+        {
+          "id": 11,
+          "name": "Full Album",
+          "price": 20.0,
+          "available?": true
+        },
+        {
+          "id": 12,
+          "name": "Deluxe LP",
+          "price": 30.0,
+          "available?": false
+        }
+      ],
+      "price_range": [
+        20.0,
+        30.0
+      ],
+      "soundcloud_playlist_id": 49270298,
+      "music_pressing_information": "<p>180g black vinyl, limited to 300 copies.</p>",
+      "music_track_listings": [
+        {
+          "id3_track_name": "En-tango-ed"
+        },
+        {
+          "id3_track_name": "Tango d'Antan"
+        }
+      ],
+      "custom": {
+        "title": "",
+        "banner-text": "",
+        "subtitle": ""
+      },
+      "available?": true,
+      "announced?": false,
+      "unavailable?": false,
+      "unlisted?": false,
+      "eligible_for_availability_notices?": true
+    },
+    {
+      "id": 2,
+      "name": "Sarah Cahill - Patterns of Plants",
+      "description": "<p>A 2-disc set performing selections from Mamoru Fujieda's Patterns of Plants.</p>",
+      "url": "/products/patterns-of-plants",
+      "images": [
+        {
+          "url": "https://picsum.photos/seed/plants/600",
+          "v075_url": "https://picsum.photos/seed/plants/75",
+          "v200_url": "https://picsum.photos/seed/plants/200",
+          "v300_url": "https://picsum.photos/seed/plants/300",
+          "v600_url": "https://picsum.photos/seed/plants/600"
+        }
+      ],
+      "variations": [
+        {
+          "id": 21,
+          "name": "2xCD",
+          "price": 18.0,
+          "available?": false
+        }
+      ],
+      "price_range": [
+        18.0
+      ],
+      "custom": {},
+      "available?": true,
+      "announced?": false,
+      "unavailable?": false,
+      "unlisted?": false,
+      "eligible_for_availability_notices?": true
+    }
+  ],
+  "roster": {
+    "title": "Artists",
+    "items": [
+      {
+        "name": "Eliane Lust",
+        "url": "/artists/eliane",
+        "description": "<p>Internationally acclaimed American concert pianist raised in Belgium.</p>",
+        "soundcloud_playlist_id": null,
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/eliane/600",
+            "v075_url": "https://picsum.photos/seed/eliane/75",
+            "v200_url": "https://picsum.photos/seed/eliane/200",
+            "v600_url": "https://picsum.photos/seed/eliane/600"
+          }
+        ],
+        "links": [
+          {
+            "name": "Website",
+            "url": "http://elianelust.com/"
+          },
+          {
+            "name": "Facebook",
+            "url": "https://www.facebook.com/ElianeLu"
+          }
+        ],
+        "history_items": [
+          {
+            "name": "Early Recital Series",
+            "description": "<p>A run of recitals from the 1990s.</p>",
+            "release_information": [
+              "2013",
+              "Pinna Records",
+              "PINNA-0"
+            ],
+            "images": [
+              {
+                "url": "https://picsum.photos/seed/recital/600",
+                "v075_url": "https://picsum.photos/seed/recital/75",
+                "v200_url": "https://picsum.photos/seed/recital/200"
+              }
+            ],
+            "links": [
+              {
+                "name": "Notes",
+                "url": "http://elianelust.com/notes"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "news": {
+    "title": "News",
+    "url": "/news",
+    "items": [
+      {
+        "title": "Patterns of Plants Out Sep 16th",
+        "url": "/news/posts/patterns-of-plants",
+        "published_at": "2014-08-12",
+        "body": "<p>On September 16, Pinna Records releases a 2-disc set by Sarah Cahill.</p>"
+      },
+      {
+        "title": "Entangoed on Spotify and Rdio",
+        "url": "/news/posts/entangoed-streaming",
+        "published_at": "2014-03-18",
+        "body": "<p>You can now listen to Entangoed on Spotify.</p>"
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": 5,
+      "name": "Eliane Lust Live at Old First",
+      "url": "/events/eliane-old-first",
+      "starts_at": "2014-11-02T20:00:00Z",
+      "description": "<p>An evening of solo tango.</p>",
+      "images": [
+        {
+          "url": "https://picsum.photos/seed/event/600",
+          "v075_url": "https://picsum.photos/seed/event/75",
+          "v200_url": "https://picsum.photos/seed/event/200"
+        }
+      ],
+      "variations": [
+        {
+          "id": 51,
+          "name": "General Admission",
+          "price": 15.0,
+          "available?": true
+        }
+      ],
+      "price_range": [
+        15.0
+      ],
+      "soundcloud_playlist_id": null,
+      "venue": {
+        "name": "Old First Concerts",
+        "maps_url": "https://maps.google.com/?q=1751+Sacramento+St+San+Francisco",
+        "street_address_1": "1751 Sacramento St",
+        "street_address_2": "",
+        "city": "San Francisco",
+        "state": "CA",
+        "postal_code": "94109",
+        "country": "USA"
+      },
+      "available?": true,
+      "announced?": false,
+      "unavailable?": false,
+      "unlisted?": false,
+      "eligible_for_availability_notices?": false
+    }
+  ],
+  "gallery": {
+    "title": "Gallery",
+    "items": [
+      {
+        "url": "https://picsum.photos/seed/g1/600",
+        "v200_url": "https://picsum.photos/seed/g1/200"
+      },
+      {
+        "url": "https://picsum.photos/seed/g2/600",
+        "v200_url": "https://picsum.photos/seed/g2/200"
+      }
+    ]
+  },
+  "history": {
+    "title": "History",
+    "items": [
+      {
+        "name": "Pinna 0 - Prelude",
+        "description": "<p>The label's first release.</p>",
+        "release_information": [
+          "2012",
+          "Pinna Records",
+          "PINNA-0"
+        ],
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/h1/600",
+            "v075_url": "https://picsum.photos/seed/h1/75",
+            "v200_url": "https://picsum.photos/seed/h1/200"
+          }
+        ],
+        "links": [
+          {
+            "name": "Bandcamp",
+            "url": "https://pinna.bandcamp.com"
+          }
+        ]
+      }
+    ]
+  },
+  "orders": [
+    {
+      "number": "1001",
+      "key": "abc123",
+      "paypal_pay_key": "PAY-XYZ",
+      "digital": false,
+      "state": "paid",
+      "transaction_id": "TXN-98765",
+      "subtotal": 20.0,
+      "shipping": 5.0,
+      "discount_amount": 2.0,
+      "total_price": 23.0,
+      "customer": {
+        "first_name": "Ada",
+        "last_name": "Lovelace",
+        "email": "ada@example.com"
+      },
+      "shipping_address": {
+        "first_name": "Ada",
+        "last_name": "Lovelace",
+        "street_address_1": "12 Baker St",
+        "street_address_2": "",
+        "city": "London",
+        "state": "",
+        "postal_code": "W1U",
+        "country": "UK"
+      },
+      "items": [
+        {
+          "name": "Eliane Lust - Entangoed (Full Album)",
+          "unit_price": 20.0,
+          "quantity": 1,
+          "total_price": 20.0
+        }
+      ],
+      "downloads": [],
+      "attempted?": true,
+      "discount?": true
+    }
+  ],
+  "message": {}
+}

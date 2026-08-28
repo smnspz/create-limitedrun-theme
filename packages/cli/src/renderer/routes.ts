@@ -17,7 +17,21 @@ export interface RouteMatch {
   status?: number;
 }
 
+/**
+ * Coerce a value to an array.
+ *
+ * @param v - any value
+ * @returns `v` if it is an array, otherwise an empty array
+ */
 const asArray = (v: unknown): any[] => (Array.isArray(v) ? v : []);
+
+/**
+ * Find the item in a list whose `url` equals the given path.
+ *
+ * @param list - a value expected to be an array of `{ url }` objects
+ * @param pathname - the request path to match
+ * @returns the matching item, or `undefined`
+ */
 const byUrl = (list: unknown, pathname: string) => asArray(list).find((it) => it?.url === pathname);
 
 interface Route {
@@ -150,6 +164,7 @@ const routes: Route[] = [
 
 /**
  * Resolve a request path to a template and its assigns.
+ *
  * @param pathname - request path, e.g. `/products/foo`
  * @param store - the loaded store.json mock data
  * @param query - request query string params

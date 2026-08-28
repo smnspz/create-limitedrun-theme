@@ -23,6 +23,9 @@ export class ThemeRenderer {
   private readonly liquid: Liquid;
 
   /**
+   * Create a renderer bound to one theme, registering the custom Limited Run
+   * filters and tags on a fresh liquidjs instance.
+   *
    * @param themePath - absolute path to the theme root
    * @param options - strictness options
    */
@@ -43,6 +46,14 @@ export class ThemeRenderer {
     registerTags(this.liquid, snippetsDir);
   }
 
+  /**
+   * Read a theme file as UTF-8 text. Re-reads on every call so edits are
+   * picked up on the next request.
+   *
+   * @param dir - theme subdirectory (a `THEME_DIRS` value)
+   * @param file - file name within that directory
+   * @returns the file contents
+   */
   private read(dir: string, file: string): string {
     return readFileSync(path.join(this.themePath, dir, file), 'utf8');
   }
@@ -69,6 +80,10 @@ export class ThemeRenderer {
   /**
    * Render a standalone template without the layout (for `maintenance.html`,
    * `404.html`, and other full-document templates).
+   *
+   * @param template - template file name
+   * @param assigns - per-route variables merged over the globals
+   * @returns the rendered HTML
    */
   async renderBare(template: string, assigns: Record<string, unknown> = {}): Promise<string> {
     const globals = loadGlobals(this.themePath);
@@ -81,7 +96,9 @@ export class ThemeRenderer {
   /**
    * Render a stylesheet through Liquid with only `config` in scope, matching
    * the gem's `/stylesheets/:file` route.
+   *
    * @param file - css file name within the stylesheets directory
+   * @returns the compiled CSS
    */
   async renderStylesheet(file: string): Promise<string> {
     const { config } = loadGlobals(this.themePath);

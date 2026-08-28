@@ -17,6 +17,13 @@ Options:
   --out DIR     build output directory (default: <path>/dist)
 `;
 
+/**
+ * Parse `process.argv` and run the requested command (`dev` or `build`).
+ * Prints usage and exits non-zero for an unknown or missing command.
+ *
+ * @returns a promise that resolves once the command has finished (for `dev`,
+ *   after the server has started; the process then stays alive on its own)
+ */
 async function main(): Promise<void> {
   const command = process.argv[2];
   const { values } = parseArgs({

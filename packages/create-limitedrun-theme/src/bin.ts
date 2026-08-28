@@ -20,12 +20,24 @@ const TEMPLATES = [
   { id: 'winter-peak', label: 'Winter Peak', hint: 'Winter with a bolder header' },
 ] as const;
 
-/** This package's version, used to pin the theme's @limitedrun/cli dependency. */
+/**
+ * Read this package's own version from its package.json, used to pin the
+ * generated theme's `@limitedrun/cli` dependency.
+ *
+ * @returns the version string (e.g. `0.1.0`)
+ */
 async function ownVersion(): Promise<string> {
   const pkg = JSON.parse(await readFile(path.join(HERE, '..', 'package.json'), 'utf8'));
   return pkg.version as string;
 }
 
+/**
+ * Build the `package.json` contents for a generated theme project.
+ *
+ * @param name - the theme/project name (the target directory's basename)
+ * @param cliVersion - version to pin `@limitedrun/cli` to, as `^<version>`
+ * @returns the file contents, newline-terminated
+ */
 function themePackageJson(name: string, cliVersion: string): string {
   return `${JSON.stringify(
     {
@@ -46,6 +58,12 @@ function themePackageJson(name: string, cliVersion: string): string {
   )}\n`;
 }
 
+/**
+ * Build the README.md contents for a generated theme project.
+ *
+ * @param name - the theme/project name
+ * @returns the Markdown document
+ */
 const THEME_README = (name: string) => `# ${name}
 
 A [Limited Run](https://limitedrun.com/) theme.
@@ -66,6 +84,12 @@ Edit \`store.json\` to change the mock data the preview renders against.
 under Storefront → Themes.
 `;
 
+/**
+ * Ask a yes/no question, exiting the process if the user cancels the prompt.
+ *
+ * @param message - the question to display
+ * @returns the user's choice
+ */
 async function confirm(message: string): Promise<boolean> {
   const answer = await p.confirm({ message });
   if (p.isCancel(answer)) {
@@ -75,6 +99,14 @@ async function confirm(message: string): Promise<boolean> {
   return answer;
 }
 
+/**
+ * Run the scaffolder: resolve the target directory and starter template
+ * (from flags/positionals or interactive prompts), copy the template plus the
+ * shared store mock, write `package.json` / `README.md`, and optionally run
+ * `npm install` and `git init`.
+ *
+ * @returns a promise that resolves once the theme has been created
+ */
 async function main(): Promise<void> {
   const { values, positionals } = parseArgs({
     args: process.argv.slice(2),

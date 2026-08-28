@@ -24,6 +24,10 @@ export interface ThemeGlobals {
  * Build the `config` map from `configs/default.json`: every setting whose
  * `default` is truthy, then overlaid with any `store.config` overrides —
  * matching the gem's Renderer#theme_config.
+ *
+ * @param themePath - absolute path to the theme root
+ * @param storeConfig - the optional `config` object from store.json
+ * @returns the resolved setting-key to value map exposed to templates as `config`
  */
 function buildConfig(
   themePath: string,
@@ -42,7 +46,10 @@ function buildConfig(
 /**
  * Load the theme's global scope from disk. Re-read on every request so edits
  * to store.json / configs show up on the next reload.
+ *
  * @param themePath - absolute path to the theme root
+ * @returns the `config`, `store`, and `store_script_tag` globals
+ * @throws {StoreValidationError} if store.json is missing or invalid
  */
 export function loadGlobals(themePath: string): ThemeGlobals {
   const store = loadStore(themePath);

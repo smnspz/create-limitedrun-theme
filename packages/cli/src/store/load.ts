@@ -15,7 +15,12 @@ export class StoreValidationError extends Error {
 const ajv = new Ajv({ allErrors: true, allowUnionTypes: true });
 const validate = ajv.compile(schema);
 
-/** Render Ajv errors as a short, readable list. */
+/**
+ * Render Ajv validation errors as a short, readable, indented list.
+ *
+ * @param errors - the `validate.errors` array from Ajv
+ * @returns one `  <path> <message>` line per error, newline-separated
+ */
 function formatErrors(errors: ErrorObject[]): string {
   return errors.map((e) => `  ${e.instancePath || '/'} ${e.message ?? 'is invalid'}`).join('\n');
 }

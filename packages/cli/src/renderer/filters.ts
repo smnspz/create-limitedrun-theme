@@ -8,7 +8,13 @@ import type { Liquid } from 'liquidjs';
 // gem — their behaviour here is a best-effort approximation pending official
 // platform documentation.
 
-/** Format a number or numeric string as `$0.00`; arrays are mapped element-wise. */
+/**
+ * Format a value as `$0.00`.
+ *
+ * @param input - a number, a numeric string (currency symbols are stripped), or
+ *   an array of either; non-numeric input is returned unchanged
+ * @returns the formatted string, or an array of formatted strings for array input
+ */
 function money(input: unknown): string | string[] {
   if (Array.isArray(input)) return input.map((v) => money(v) as string);
   if (input === null || input === undefined || input === '') return '';
@@ -17,7 +23,13 @@ function money(input: unknown): string | string[] {
   return `$${n.toFixed(2)}`;
 }
 
-/** Add an ordinal suffix to an integer-ish value: 1 -> "1st", 22 -> "22nd". */
+/**
+ * Add an ordinal suffix to an integer-ish value: 1 -> "1st", 22 -> "22nd".
+ *
+ * @param input - a number or string parseable as an integer; unparseable input
+ *   is coerced to string and returned unchanged
+ * @returns the number with its ordinal suffix
+ */
 function ordinalize(input: unknown): string {
   const n = Number.parseInt(String(input), 10);
   if (Number.isNaN(n)) return String(input ?? '');
@@ -36,7 +48,14 @@ function ordinalize(input: unknown): string {
   return `${n}${suffix}`;
 }
 
-/** Wrap plain text in `<p>` / `<br />`; pass through text that already has block markup. */
+/**
+ * Approximate Rails' `simple_format`: wrap paragraphs in `<p>` and turn single
+ * newlines into `<br />`. Text that already contains block-level markup is
+ * returned unchanged.
+ *
+ * @param input - the source text (coerced to string; empty/nullish yields "")
+ * @returns the formatted HTML
+ */
 function simpleFormat(input: unknown): string {
   const text = String(input ?? '').trim();
   if (text === '') return '';
@@ -45,7 +64,13 @@ function simpleFormat(input: unknown): string {
   return paragraphs.map((p) => `<p>${p}</p>`).join('\n\n');
 }
 
-/** Resolve the URL of a theme stylesheet (ported from the gem). */
+/**
+ * Resolve the URL of a theme stylesheet (ported from the gem): absolute URLs
+ * pass through; bare names get a `/stylesheets/` prefix and a `.css` suffix.
+ *
+ * @param input - a stylesheet name or URL; null/undefined yields ""
+ * @returns the resolved stylesheet URL
+ */
 function stylesheetUrl(input: unknown): string {
   if (input === null || input === undefined) return '';
   let s = String(input);
@@ -56,9 +81,10 @@ function stylesheetUrl(input: unknown): string {
 }
 
 /**
- * Register every custom filter on a Liquid instance.
+ * Register every custom Limited Run filter on a Liquid instance.
+ *
  * @param liquid - the engine to extend
- * @param javascriptsDir - configured name of the theme's JS directory, for `script_tag`
+ * @param javascriptsDir - configured name of the theme's JS directory, used by `script_tag`
  */
 export function registerFilters(liquid: Liquid, javascriptsDir: string): void {
   liquid.registerFilter('money', money);

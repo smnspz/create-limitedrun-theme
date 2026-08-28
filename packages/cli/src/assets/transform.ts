@@ -38,8 +38,13 @@ const identity: AssetTransform = {
 export const transforms: AssetTransform[] = [identity];
 
 /**
- * Run an asset file through the first matching transform.
- * @returns the emitted name and bytes; falls back to a verbatim copy
+ * Run an asset file through the first matching transform in the registry.
+ *
+ * @param source - the source file bytes
+ * @param file - the source file name (or path relative to the theme root)
+ * @param ctx - transform context (theme root and containing directory)
+ * @returns the emitted name and bytes; falls back to a verbatim copy when no
+ *   transform matches
  */
 export async function applyTransforms(
   source: Buffer,

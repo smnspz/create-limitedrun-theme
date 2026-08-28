@@ -22,7 +22,14 @@ interface BlockTag {
   render(ctx: Context, emitter: Emitter): Generator<unknown, void, unknown>;
 }
 
-/** Collect tokens until `end<name>` into `this.templates`, parsing each. */
+/**
+ * Consume remaining tokens up to the matching `end<name>` tag, parsing each into
+ * `this.templates`. Called from a tag's `parse` hook with `this` bound to the tag.
+ *
+ * @param endTag - the closing tag name (e.g. `endpaginate`)
+ * @param remain - the parser's remaining token stream; drained in place
+ * @throws {Error} if the stream ends before the closing tag is seen
+ */
 function parseBlock(this: BlockTag, endTag: string, remain: TopLevelToken[]): void {
   this.templates = [];
   const parser = (
@@ -38,6 +45,14 @@ function parseBlock(this: BlockTag, endTag: string, remain: TopLevelToken[]): vo
   throw new Error(`tag {% ${this.token.getText?.() ?? ''} %} not closed`);
 }
 
+/**
+ * Render the templates collected by {@link parseBlock} in the current context.
+ * Called from a tag's `render` hook with `this` bound to the tag.
+ *
+ * @param ctx - the active Liquid render context
+ * @param emitter - the output emitter to write into
+ * @yields the renderer's work; produces no return value
+ */
 function* renderBlock(
   this: BlockTag,
   ctx: Context,
@@ -51,7 +66,16 @@ function* renderBlock(
   yield renderer.renderTemplates(this.templates as unknown, ctx, emitter);
 }
 
-/** Parse `'file.ext' key='value' key2=ident` into a filename and a params map. */
+/**
+ * Parse an `include` tag's argument string — `'file.ext' key='value' key2=ident`
+ * — into the snippet file name and a params map. Quoted values are literals;
+ * bare identifiers are resolved against the render context.
+ *
+ * @param args - the raw argument string from the tag token
+ * @param ctx - the render context, used to resolve bare-identifier params
+ * @returns the snippet `file` name and the `params` exposed to it as `include.*`
+ * @throws {Error} if no quoted file name is present
+ */
 function parseIncludeArgs(
   args: string,
   ctx: Context,
@@ -73,13 +97,18 @@ function parseIncludeArgs(
 }
 
 /**
- * Register the custom tags on a Liquid instance.
+ * Register the custom Limited Run tags (`paginate`, `contact_form`, `captcha`,
+ * `include`) on a Liquid instance.
+ *
  * @param liquid - the engine to extend
- * @param snippetsDir - absolute path to the theme's snippets directory
+ * @param snippetsDir - absolute path to the theme's snippets directory, used by
+ *   `include` for lookup and path-traversal checks
  */
 export function registerTags(liquid: Liquid, snippetsDir: string): void {
   const resolvedSnippets = path.resolve(snippetsDir);
 
+  // `{% paginate collection by N %}…{% endpaginate %}` — pass-through: renders
+  // the body in the current scope, ignoring the pagination arguments.
   liquid.registerTag('paginate', {
     parse(token: TagToken, remain: TopLevelToken[]) {
       parseBlock.call(this as unknown as BlockTag, 'endpaginate', remain);
@@ -89,6 +118,8 @@ export function registerTags(liquid: Liquid, snippetsDir: string): void {
     },
   });
 
+  // `{% contact_form %}…{% endcontact_form %}` — wraps the body in a `<form>`
+  // that posts to `/contact`.
   liquid.registerTag('contact_form', {
     parse(token: TagToken, remain: TopLevelToken[]) {
       parseBlock.call(this as unknown as BlockTag, 'endcontact_form', remain);
@@ -100,12 +131,15 @@ export function registerTags(liquid: Liquid, snippetsDir: string): void {
     },
   });
 
+  // `{% captcha [theme] %}` — emits static placeholder markup for local preview.
   liquid.registerTag('captcha', {
     render(_ctx: Context, emitter: Emitter) {
       emitter.write('<div class="captcha" data-preview-placeholder="true">[captcha]</div>');
     },
   });
 
+  // `{% include 'file.ext' key='value' %}` — renders a snippet with the given
+  // params exposed as `include.*`; rejects paths that escape the snippets dir.
   liquid.registerTag('include', {
     render(ctx: Context, emitter: Emitter) {
       const self = this as unknown as { token: TagToken; liquid: Liquid };

@@ -26,6 +26,13 @@ export interface BuildResult {
   fileCount: number;
 }
 
+/**
+ * List every file under `<root>/<dir>`, recursively.
+ *
+ * @param root - theme root the paths are made relative to
+ * @param dir - subdirectory to scan; a missing directory yields an empty list
+ * @returns file paths relative to `root`, using the platform separator
+ */
 async function collectDir(root: string, dir: string): Promise<string[]> {
   const abs = path.join(root, dir);
   if (!existsSync(abs)) return [];
@@ -65,6 +72,12 @@ export async function build(themePath: string, outDir?: string): Promise<BuildRe
 
   const files: Record<string, Uint8Array> = {};
 
+  /**
+   * Write one file into the staging directory and record it for the zip.
+   *
+   * @param rel - path relative to the theme root / staging root
+   * @param content - file bytes
+   */
   const write = async (rel: string, content: Buffer) => {
     const dest = path.join(stageDir, rel);
     await mkdir(path.dirname(dest), { recursive: true });

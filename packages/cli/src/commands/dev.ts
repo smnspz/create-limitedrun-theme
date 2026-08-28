@@ -32,6 +32,13 @@ const LIVERELOAD_SNIPPET = `<script>
 })();
 </script>`;
 
+/**
+ * Render a minimal HTML page describing a render failure, with the live-reload
+ * client attached so the page refreshes once the theme is fixed.
+ *
+ * @param err - the error thrown while rendering
+ * @returns a full HTML document
+ */
 function renderErrorPage(err: unknown): string {
   const message = err instanceof Error ? err.message : String(err);
   return `<!doctype html><html><head><meta charset="utf-8"><title>Theme error</title></head>
@@ -41,9 +48,15 @@ ${LIVERELOAD_SNIPPET}</body></html>`;
 }
 
 /**
- * Build the Hono app that serves a live preview of the theme.
+ * Build the Hono app that serves a live preview of the theme: template routes,
+ * Liquid-processed stylesheets, verbatim JavaScript, and an SSE endpoint that
+ * pushes browser reloads.
+ *
  * @param options - theme path and strictness
- * @param onClient - registers an SSE reload channel; returns an unsubscribe fn
+ * @param subscribers - shared set of reload callbacks; each open SSE connection
+ *   adds its notifier here and removes it on disconnect, so the file watcher can
+ *   broadcast a reload to every connected browser
+ * @returns the configured Hono app (not yet listening)
  */
 export function createDevApp(options: DevServerOptions, subscribers: Set<() => void>): Hono {
   const { themePath, strict } = options;
@@ -112,8 +125,11 @@ export function createDevApp(options: DevServerOptions, subscribers: Set<() => v
 }
 
 /**
- * Start the dev server: HTTP preview + file watcher wired to live reload.
- * @returns a function that stops the server and watcher
+ * Start the dev server: HTTP preview plus a chokidar watcher on the theme
+ * directory that broadcasts a reload to every connected browser on any change.
+ *
+ * @param options - theme path, strictness, and the port to listen on
+ * @returns an async function that stops the watcher and the HTTP server
  */
 export async function runDev(
   options: DevServerOptions & { port: number },

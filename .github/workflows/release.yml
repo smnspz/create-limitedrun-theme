@@ -12,6 +12,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      # Lets npm mint a short-lived OIDC token for trusted publishing (no NPM_TOKEN).
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,6 +22,8 @@ jobs:
           cache: npm
           registry-url: https://registry.npmjs.org
       - run: npm ci
+      # Trusted publishing (OIDC) and provenance need npm >= 11.5.1.
+      - run: npm install -g npm@latest
       - run: npm run build
       # Opens/updates a "Version Packages" PR; on merge, publishes to npm.
       - uses: changesets/action@v1
@@ -27,5 +31,3 @@ jobs:
           publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

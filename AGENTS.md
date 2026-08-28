@@ -124,9 +124,12 @@ Node 20+ (dev machine has 22). ESM-only, TypeScript strict.
   → `npm test`. It must pass; both must be green before committing.
 - **Formatting**: Prettier only. (Biome was tried but its native binary needs
   glibc 2.29+; this host has 2.28.)
-- **Versioning/release**: Changesets. `.github/workflows/release.yml` publishes
-  on merge to `main`. Nothing is published to npm yet — see
-  `docs/research/` and the memory notes.
+- **Versioning/release**: Changesets. `.github/workflows/release.yml` opens a
+  "Version Packages" PR; merging it publishes both packages to npm via
+  **trusted publishing (OIDC)** — no `NPM_TOKEN` secret. Each package must be
+  configured on npmjs.com with repo + workflow `release.yml`, and needs one
+  manual first publish (`npm publish --access public`) before OIDC can take
+  over. Nothing is published to npm yet — see `docs/research/` and memory.
 - **README maintenance**: update the relevant README when setup/commands/
   architecture change.
 

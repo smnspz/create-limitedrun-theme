@@ -77,9 +77,15 @@ what the function does**, step by step. But comment in **blocks**, not per line.
   for the whole block is enough — do **not** comment each line.
 - Only drop to **line-by-line** comments inside a block when the logic is
   genuinely intricate (a parser, a money/security path, a non-obvious algorithm).
-- **Start every comment with a verb**: `// Validate the theme before emitting`,
+- **Start every comment with a verb**: `// Validate the theme`,
   `// Prepare a clean staging directory`, `// Return the build result`.
 - Keep comments **very short** — a few words, no trailing period.
+- State the **essence only**. Drop parenthetical enumerations and trailing
+  detail clauses — the code lists the specifics.
+  - `// Copy the verbatim directories (configs, layouts, templates, snippets)` → **no**
+  - `// Copy the verbatim directories` → **yes**
+  - `// Copy the asset directories, each file through the transform registry` → **no**
+  - `// Copy the asset directories` → **yes**
 
 No numbered lists, no divider bars, no top-of-file banner.
 

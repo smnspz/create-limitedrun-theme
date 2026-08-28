@@ -34,11 +34,11 @@ export interface BuildResult {
  * @returns file paths relative to `root`, using the platform separator
  */
 async function collectDir(root: string, dir: string): Promise<string[]> {
-  // Bail out if the directory does not exist
+  // Bail out if the directory is absent
   const abs = path.join(root, dir);
   if (!existsSync(abs)) return [];
 
-  // Return every file, as a path relative to the root
+  // Return every file relative to the root
   const entries = await readdir(abs, { recursive: true, withFileTypes: true });
   return entries
     .filter((e) => e.isFile())
@@ -58,7 +58,7 @@ async function collectDir(root: string, dir: string): Promise<string[]> {
  * @returns paths and file count of the produced export
  */
 export async function build(themePath: string, outDir?: string): Promise<BuildResult> {
-  // Validate the theme before emitting anything: config must parse, store.json must be valid
+  // Validate the theme before emitting anything
   try {
     JSON.parse(await readFile(path.join(themePath, THEME_DIRS.configs, 'default.json'), 'utf8'));
   } catch (err) {
@@ -66,17 +66,17 @@ export async function build(themePath: string, outDir?: string): Promise<BuildRe
   }
   loadStore(themePath);
 
-  // Prepare a clean staging directory: <outDir|themePath/dist>/<name>
+  // Prepare a clean staging directory
   const name = path.basename(themePath);
   const dist = outDir ?? path.join(themePath, 'dist');
   const stageDir = path.join(dist, name);
   await rm(stageDir, { recursive: true, force: true });
   await mkdir(stageDir, { recursive: true });
 
-  // Collect every emitted file for the zip, keyed by forward-slash path
+  // Collect every emitted file for the zip
   const files: Record<string, Uint8Array> = {};
 
-  // Write one file to the staging directory and record it for the zip
+  // Write one file and record it for the zip
   const write = async (rel: string, content: Buffer) => {
     const dest = path.join(stageDir, rel);
     await mkdir(path.dirname(dest), { recursive: true });
@@ -84,14 +84,14 @@ export async function build(themePath: string, outDir?: string): Promise<BuildRe
     files[rel.split(path.sep).join('/')] = content;
   };
 
-  // Copy the verbatim directories (configs, layouts, templates, snippets)
+  // Copy the verbatim directories
   for (const dir of COPY_DIRS) {
     for (const rel of await collectDir(themePath, dir)) {
       await write(rel, await readFile(path.join(themePath, rel)));
     }
   }
 
-  // Copy the asset directories (stylesheets, javascripts), each file through the transform registry
+  // Transform and copy the asset directories
   for (const dir of ASSET_DIRS) {
     for (const rel of await collectDir(themePath, dir)) {
       const source = await readFile(path.join(themePath, rel));
@@ -100,11 +100,11 @@ export async function build(themePath: string, outDir?: string): Promise<BuildRe
     }
   }
 
-  // Include the theme README in the export if it ships one
+  // Include the theme README if it ships one
   const readme = path.join(themePath, 'README.md');
   if (existsSync(readme)) await write('README.md', await readFile(readme));
 
-  // Write the uploadable zip archive
+  // Write the zip archive
   const zipPath = path.join(dist, `${name}.zip`);
   await writeFile(zipPath, Buffer.from(zipSync(files, { level: 6 })));
 

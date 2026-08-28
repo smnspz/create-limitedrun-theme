@@ -1,0 +1,50 @@
+{% if config['feature_product_on_front_page'] == false or current_page > 1 %}
+  {% paginate store.products by 12 %}
+    <ul class="medium-block-grid-2 small-block-grid-1">
+      {% for product in store.products %}
+        {% include 'product-item.html' %}
+      {% endfor %}
+    </ul>
+    
+    {{ store.products_pagination }}
+  {% endpaginate %}
+
+{% else %}
+  {% assign p = store.products | first %}
+  
+  {% if config['featured_product_id'] != null %}
+    {% assign p = store.product_by_id[config['featured_product_id']] %}
+  {% endif %}
+  
+  {% paginate store.products by 13 %}
+    {% if p %}
+      <ul class="medium-block-grid-1 small-block-grid-1">
+        <li id="featured">
+          <a href="{{ p.url }}">
+            <div class="overlay-wrapper">
+              <img src="{{ p.images.first.url }}" alt="{{ p.name }}" />
+              <div class="sticker"><i class="fa fa-star"></i></div>
+              <div class="overlay"><span>View Item</span></div>
+            </div>
+          </a>
+          
+          <div class="caption">
+            {{ p | link_to_product }}
+            <div class="divider"></div>
+            {{ p.price_range | money | join: ' - ' }}
+          </div>
+        </li>
+      </ul>
+    {% endif %}
+    
+    <ul class="medium-block-grid-2 small-block-grid-1">
+      {% for product in store.products %}
+        {% if p.id != product.id %}
+          {% include 'product-item.html' %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+    
+    {{ store.products_pagination }}
+  {% endpaginate %}
+{% endif %}

@@ -1,0 +1,11 @@
+{% paginate category.products by 12 %}
+  <h2>{{ category.name }}</h2>
+  
+  <ul class="medium-block-grid-2 small-block-grid-1">
+    {% for product in category.products %}
+      {% include 'product-item.html' %}
+    {% endfor %}
+  </ul>
+  
+  {{ category.products_pagination }}
+{% endpaginate %}

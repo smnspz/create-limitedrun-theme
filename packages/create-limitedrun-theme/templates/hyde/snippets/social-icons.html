@@ -1,0 +1,31 @@
+{% if config['show_social_icons'] %}
+  <ul class="social-icons">
+    {% if config['facebook_url'] %}
+      <li><a href="{{ config['facebook_url'] }}" target="_blank"><i class="fa fa-facebook"></i></a></li>
+    {% endif %}
+    
+    {% if config['twitter_url'] %}
+      <li><a href="{{ config['twitter_url'] }}" target="_blank"><i class="fa fa-twitter"></i></a></li>
+    {% endif %}
+    
+    {% if config['youtube_url'] %}
+      <li><a href="{{ config['youtube_url'] }}" target="_blank"><i class="fa fa-youtube"></i></a></li>
+    {% endif %}
+    
+    {% if config['tumblr_url'] %}
+      <li><a href="{{ config['tumblr_url'] }}" target="_blank"><i class="fa fa-tumblr"></i></a></li>
+    {% endif %}
+    
+    {% if config['instagram_url'] %}
+      <li><a href="{{ config['instagram_url'] }}" target="_blank"><i class="fa fa-instagram"></i></a></li>
+    {% endif %}
+    
+    {% if config['spotify_url'] %}
+      <li><a href="{{ config['spotify_url'] }}" target="_blank"><i class="fa fa-spotify"></i></a></li>
+    {% endif %}
+    
+    {% if config['soundcloud_url'] %}
+      <li><a href="{{ config['soundcloud_url'] }}" target="_blank"><i class="fa fa-soundcloud"></i></a></li>
+    {% endif %}
+  </ul>
+{% endif %}

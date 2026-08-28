@@ -1,0 +1,13 @@
+{% paginate gallery.items by 50 %}
+<h2>{{ page.title }}</h2>
+  
+  <div class="row small-up-1 medium-up-2 large-up-5 image-gallery">
+    {% for item in gallery.items %}
+      <a class="column grid-item" href="{{ item.v600_url }}">
+        <img src="{{ item.v600_url }}" alt="{{ item.name }}">
+      </a>
+    {% endfor %}
+  </div>
+  
+  {{ gallery.items_pagination }}
+{% endpaginate %}

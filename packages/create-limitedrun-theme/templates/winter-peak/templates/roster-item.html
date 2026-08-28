@@ -1,0 +1,60 @@
+{% if section == 'store' %}
+
+{% paginate item.products by 12 %}
+  <h2>All Products by {{ item.name }}</h2>
+    <ul class="large-block-grid-2 small-block-grid-1">
+      {% for product in item.products %}
+        {% include 'product-item.html' %}
+      {% endfor %}
+    </ul>
+    
+    {{ item.products_pagination }}
+{% endpaginate %}
+
+{% else %}
+
+{% if item.images.size > 0 %}
+    </div>
+  </div>
+  <div class="masthead" style="background-image:url({{ item.images.first.url }});"></div>
+{% endif %}
+  
+<div class="row">
+  <div class="large-12 columns">
+    <h2>{{ item.name }}</h2>
+    
+    {{ item.description | simple_format }}
+    
+    {% if item.history_items.size > 0 %}
+      <h3>Releases</h3>
+      {% for history_item in item.history_items %}
+        <p><strong>{{ history_item.name }}</strong><br />
+        {{ history_item.release_information | join: ' &middot; ' }}</p>
+      {% endfor %}
+    {% endif %}
+    
+    {% if item.links.size > 0 %}
+      <h3>Links</h3>
+      <ul>
+        {% for link in item.links %}
+          <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    
+    {% if item.products.size > 0 %}
+      <h3>Products
+        {% if item.products.size > 2 %}
+          <small><a href="{{ item.url }}/store">(View All)</a></small>
+        {% endif %}
+      </h3>
+      
+      <ul class="medium-block-grid-2 small-block-grid-1">
+        {% for product in item.products limit:2 %}
+          {% include 'product-item.html' %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+{% endif %}

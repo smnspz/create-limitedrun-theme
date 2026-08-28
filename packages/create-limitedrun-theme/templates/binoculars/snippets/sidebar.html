@@ -1,0 +1,6 @@
+<h3>Latest Products</h3>
+<ul class="large-block-grid-1">
+  {% for product in store.products limit:6 %}
+    {% include 'product-item.html' %}
+  {% endfor %}
+</ul>

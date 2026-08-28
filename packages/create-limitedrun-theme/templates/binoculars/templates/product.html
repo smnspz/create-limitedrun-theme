@@ -1,0 +1,98 @@
+<h2>{{ product.name }}
+  {% if product.music_catalog_number %}<small class="right">{{ product.music_catalog_number }}</small>{% endif %}
+</h2>
+
+<div class="row">
+  <div class="medium-6 columns">
+    <ul class="clearing-thumbs" data-clearing>
+      {% if product.images.size > 0 %}
+        {% for image in product.images %}
+          <li class="{% if forloop.index == 1 %}clearing-featured-img{% endif %}">
+            <a href="{{ image.url }}" target="_blank">
+              <img src="{{ image.v600_url }}"/>
+            </a>
+          </li>
+        {% endfor %}
+      {% else %}
+        <li>
+          <img src="https://d38hlclas8yf9g.cloudfront.net/product-image-placeholder-300.png"/>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+  
+  <div class="medium-6 columns">
+    {% if product.soundcloud_playlist_id %}
+      <iframe width="100%" height="420" scrolling="no" frameborder="no" src="http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Fplaylists%2F{{ product.soundcloud_playlist_id }}&show_artwork=false&show_playcount=false&buying=false&sharing=false&download=false&show_user=false&color={{ config['accent_color'] | replace:'#','' }}"></iframe>
+    {% endif %}
+    
+    <div class="boxed">
+      {% if product.available? %}
+        <div class="variations">
+          <select id="cart_variation_id">
+            {% if product.variations.size > 1 %}
+                      <option selected disabled>Select...</option>
+                    {% endif %}
+            {% for variation in product.variations %}
+              {% if variation.available? %}
+                <option value="{{ variation.id }}">{{ variation.price | money }} — {{ variation.name }}</option>
+              {% else %}
+                <option disabled>{{ variation.price | money }} — {{ variation.name }} (Sold Out)</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          
+          <button class="button right" onclick="javascript:Store.cart.add(document.getElementById('cart_variation_id').options[document.getElementById('cart_variation_id').selectedIndex].value);return false;">Add to Cart</button>
+        </div>
+      
+      {% elsif product.announced? %}
+        <span>This item is coming soon.</span>
+        
+      {% elsif product.unavailable? %}
+        <span>This item is unavailable.</span>
+      
+      {% elsif product.unlisted? %}
+        <span>This item isn't listed. That means it isn't visible to your customers.</span>
+      {% endif %}
+    </div>
+    
+    {% if product.eligible_for_availability_notices? %}
+      <div id="notification">
+        <a href="#" onclick="javascript:Store.requestNotification('Product', {{ product.id }});">Want an &quot;It's Available!&quot; Email Notification?</a>
+      </div>
+    {% endif %}
+    
+    {{ product.description | simple_format }}
+    
+    {% if product.music_track_listings %}
+      <h3>Track Listing</h3>
+        <ol>
+          {% for track in product.music_track_listings %}
+            <li>{{ track.id3_track_name }}</li>
+          {% endfor %}
+        </ol>
+    {% endif %}
+        
+    {% if product.music_pressing_information %}
+      <h3>Pressing Information</h3>
+      {{ product.music_pressing_information | simple_format }}
+    {% endif %}
+    
+    {% if config['display_tweet_button'] or config['display_like_button'] %}
+      <ul id="social">
+        {% if config['display_tweet_button'] %}
+          <li>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-text="{{ product.name | escape }} at {{ store.name | escape }}" data-count="none">Tweet</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+          </li>
+        {% endif %}
+        
+        {% if config['display_like_button'] %}
+          <li>
+            <iframe src="//www.facebook.com/plugins/like.php?href={{ store.url }}{{ product.url }}&send=false&layout=button_count&width=52&show_faces=false&action=like&colorscheme=light&font&height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:76px; height:35px;" allowTransparency="true"></iframe>
+          </li>
+        {% endif %}
+      </ul>
+    {% endif %}
+  </div>
+</div>

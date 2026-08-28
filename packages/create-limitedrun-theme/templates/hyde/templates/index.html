@@ -1,0 +1,74 @@
+{% paginate store.products by 24 %}
+
+{% if config['featured_carousel_location'] == 'home' or config['featured_carousel_location'] == 'both' %}
+  {% if config['featured_image_url_1'] != '' and store.products_pagination_current_page == 1 %}
+    {% if config['stretch_featured_carousel'] %}</div>{% endif %}
+    <section>
+        <div class="carousel">
+          <a href="{{ config['featured_image_destination_1'] }}">
+            <img src="{{ config['featured_image_url_1'] }}">
+            {% if config['featured_image_caption_1'] %}
+              <div class="caption show-for-medium">
+                <h3>{{ config['featured_image_caption_1'] }}</h3>
+              </div>
+            {% endif %}
+          </a>
+          
+          {% if config['featured_image_url_2'] != null %}
+            <a href="{{ config['featured_image_destination_2'] }}">
+              <img src="{{ config['featured_image_url_2'] }}">
+              {% if config['featured_image_caption_2'] %}
+                <div class="caption show-for-medium">
+                  <h3>{{ config['featured_image_caption_2'] }}</h3>
+                </div>
+              {% endif %}
+            </a>
+          {% endif %}
+          
+          {% if config['featured_image_url_3'] != null %}
+            <a href="{{ config['featured_image_destination_3'] }}">
+              <img src="{{ config['featured_image_url_3'] }}">
+              {% if config['featured_image_caption_3'] %}
+                <div class="caption show-for-medium">
+                  <h3>{{ config['featured_image_caption_3'] }}</h3>
+                </div>
+              {% endif %}
+            </a>
+          {% endif %}
+        </div>
+    </section>
+  {% endif %}
+{% endif %}
+
+  <section>
+    <div class="row align-middle align-right">
+      <div class="columns">
+        Showing Page {{ store.products_pagination_current_page }} of {{ store.products_pagination_num_pages }}
+      </div>
+      
+      <div class="small-7 medium-4 large-3 columns">
+        <div class="variations">
+          <select onChange="document.location = this.value" value="GO">
+            <option value="" selected disabled>Sort by Category</option>
+            {% for category in store.categories %}
+              <option value="{{ category.url }}">{{ category.name }}</option>
+            {% endfor %}
+          </select>
+          <i class="fa fa-angle-down fa-lg"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section>
+    <div class="row small-up-1 medium-up-2 large-up-{{ config['grid_items_per_row'] }} align-middle">
+      {% for product in store.products %}
+        {% include 'product-item.html' %}
+      {% endfor %}
+    </div>
+  
+    <div class="row column">
+      {{ store.products_pagination }}
+    </div>
+  </section>
+{% endpaginate %}

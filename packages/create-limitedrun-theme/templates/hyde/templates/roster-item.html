@@ -1,0 +1,90 @@
+{% if section == 'store' %}
+  {% paginate item.products by 24 %}
+    <h2>All Products by {{ item.name }}</h2>
+    
+    <div class="row small-up-1 medium-up-2 large-up-{{ config['grid_items_per_row'] }} align-middle">
+      {% for product in item.products %}
+        {% include 'product-item.html' %}
+      {% endfor %}
+    </div>
+    
+    {{ item.products_pagination }}
+  {% endpaginate %}
+
+{% else %}
+
+<h2>{{ item.name }}</h2>
+
+<div class="row">
+  <div class="small-12 medium-8 columns">
+    <section>
+      <ul class="slider">
+        {% for image in item.images %}
+          <li>{{ image.url | img_tag }}</li>
+        {% endfor %}
+      </ul>
+      
+      {% if item.images.size > 1 %}
+        <ul class="slider-thumbnails">
+          {% for image in item.images %}
+            <li>{{ image.v300_url | img_tag }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </section>
+    
+    <section>
+      <ul class="horizontal-list">
+        {% for link in item.links %}
+          <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {% endfor %}
+      </ul>
+      
+      {{ item.description | simple_format }}
+    </section>
+    
+    {% if config['show_bandsintown_embed_on_artist_pages'] %}
+      <section>
+        <h3>Tour Dates</h3>
+			  <script charset="utf-8" src="https://widget.bandsintown.com/main.min.js"></script>
+			  <a class="bit-widget-initializer" data-artist-name="{{ item.name }}" data-display-local-dates="false" data-display-past-dates="false" data-auto-style="false" data-display-limit="15"></a>
+      </section>
+    {% endif %}
+  </div>
+  
+  <div class="small-12 medium-4 columns">
+    {% if item.history_items.size > 0 %}
+      <section>
+        {% for history_item in item.history_items %}
+          <div class="row" style="margin-bottom:1em;">
+            <div class="small-5 columns">
+              {{ history_item.images.first.v200_url | img_tag: 'thumbnail' }}
+            </div>
+            <div class="small-7 columns">
+              <h5>{{ history_item.name }}</h5>
+              <small>{{ history_item.release_information | join: ' <br> ' }}</small>
+            </div>
+          </div>
+        {% endfor %}
+      </section>
+    {% endif %}
+  </div>
+</div>
+
+{% if item.products.size > 0 %}
+  <div class="row column">
+    <hr>
+    <h3>Products
+      {% if item.products.size > 4 %}
+        <small class="right"><a href="{{ item.url }}/store">View All</a></small>
+      {% endif %}
+    </h3>
+  </div>
+  
+  <div class="row small-up-1 medium-up-2 large-up-{{ config['grid_items_per_row'] }} align-middle">
+    {% for product in item.products limit:4 %}
+      {% include 'product-item.html' %}
+    {% endfor %}
+  </div>
+{% endif %}
+{% endif %}

@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="large-12 columns">
+    <row>
+      <div class="large-6 columns">
+        <h4>Search Results</h4>
+      </div>
+      
+      <div class="large-6 columns">
+        <form id="search" action="/products/search" method="get">
+          <input type="input" name="q" value="{{ query }}"/>
+          <a href="#" class="button tiny" onclick="javascript:document.getElementById('search').submit();">Search</a>
+        </form>
+      </div>
+    </row>
+    
+    <hr/>
+
+    <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+      {% for product in products %}
+        <li>
+          {% include 'product-for-grid.html' %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

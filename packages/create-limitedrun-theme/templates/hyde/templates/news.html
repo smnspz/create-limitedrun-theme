@@ -1,0 +1,64 @@
+{% if config['featured_carousel_location'] == 'news' or config['featured_carousel_location'] == 'both' %}
+  {% if config['featured_image_url_1'] != '' %}
+    {% if config['stretch_featured_carousel'] %}</div>{% endif %}
+    <section>
+        <div class="carousel">
+          <a href="{{ config['featured_image_destination_1'] }}">
+            <img src="{{ config['featured_image_url_1'] }}">
+            {% if config['featured_image_caption_1'] %}
+              <div class="caption show-for-medium">
+                <h3>{{ config['featured_image_caption_1'] }}</h3>
+              </div>
+            {% endif %}
+          </a>
+          
+          {% if config['featured_image_url_2'] != null %}
+            <a href="{{ config['featured_image_destination_2'] }}">
+              <img src="{{ config['featured_image_url_2'] }}">
+              {% if config['featured_image_caption_2'] %}
+                <div class="caption show-for-medium">
+                  <h3>{{ config['featured_image_caption_2'] }}</h3>
+                </div>
+              {% endif %}
+            </a>
+          {% endif %}
+          
+          {% if config['featured_image_url_3'] != null %}
+            <a href="{{ config['featured_image_destination_3'] }}">
+              <img src="{{ config['featured_image_url_3'] }}">
+              {% if config['featured_image_caption_3'] %}
+                <div class="caption show-for-medium">
+                  <h3>{{ config['featured_image_caption_3'] }}</h3>
+                </div>
+              {% endif %}
+            </a>
+          {% endif %}
+        </div>
+    </section>
+  {% endif %}
+{% endif %}
+
+<div class="row">
+  <div class="small-12 medium-7 columns">
+    {% paginate news.items by 12 %}
+    {% for item in news.items %}
+      <article class="list">
+        <h2>{{ item | link_to_news_item }}
+          <small>{{ item.published_at | date: "%-d %B %Y" }}</small>
+        </h2>
+        {{ item.body }}
+      </article>
+    {% endfor %}
+  </div>
+  
+  <aside class="small-12 medium-5 columns show-for-medium">
+    <h2>Latest News</h2>
+    <ul class="vertical-list">
+      {% for item in news.items | limit: 10 %}
+        <li class="ellipsis"><span>{{ item.published_at | date: "%m/%d" }}</span> <a href="{{ item.url }}">{{ item.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{{ news.items_pagination }}
+{% endpaginate %}

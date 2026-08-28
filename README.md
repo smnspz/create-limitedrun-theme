@@ -17,11 +17,16 @@ cd my-theme
 npm run dev      # preview at http://localhost:4567
 ```
 
+The scaffolder prompts for a starter theme (or pass `--template <id>`):
+`skeleton` (default), `telescope`, `hyde`, `binoculars`, `winter`, `winter-peak`
+— ported from Limited Run's own themes. Every starter ships the same
+`store.json` mock and a `.gitignore`.
+
 ## Packages
 
 | Package                                                         | What it does                                                                     |
 | --------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [`create-limitedrun-theme`](./packages/create-limitedrun-theme) | `npm create` scaffolder — copies the starter theme, wires `package.json`         |
+| [`create-limitedrun-theme`](./packages/create-limitedrun-theme) | `npm create` scaffolder — picks a starter theme, wires `package.json`            |
 | [`@limitedrun/cli`](./packages/cli)                             | `limitedrun dev` (preview + live reload) and `limitedrun build` (validate + zip) |
 
 ## CLI

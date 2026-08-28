@@ -1,0 +1,29 @@
+<li class="product">
+  <a href="{{ product.url }}">
+    <div class="overlay-wrapper">
+      <div class="overlay"><span>{{ product.name }}</span></div>
+      <img src="{{ product.images.first.v300_url }}" alt="{{ product.name }}" />
+    </div>
+  </a>
+
+  <div class="variations">
+    {% if product.available? %}
+      <select id="cart_variation_id_{{ product.id }}" class="cart_variation">
+        <option disabled selected>Select...</option>
+        {% for variation in product.variations %}
+          {% if variation.available? %}
+            <option value="{{ variation.id }}">{{ variation.price | money }} — {{ variation.name }}</option>
+          {% else %}
+            <option disabled>{{ variation.price | money }} — {{ variation.name }} (Unavailable)</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      
+      <button class="button right" onclick="javascript:Store.cart.add(document.getElementById('cart_variation_id_{{ product.id }}').options[document.getElementById('cart_variation_id_{{ product.id }}').selectedIndex].value);return false;">Add</button>
+      {% elsif product.announced? %}
+        <span>Coming Soon</span>
+      {% elsif product.unavailable? %}
+        <span>Unavailable</span>
+    {% endif %}
+  </div>
+</li>

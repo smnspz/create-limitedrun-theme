@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <title>
+      {% if product %}
+        {{ product.name }} -
+      {% elsif category %}
+        {{ category.name }} -
+      {% elsif page %}
+        {{ page.title }} -
+      {% endif %}
+      {{ store.name }}
+    </title>
+
+    {% if product %}
+      <meta name="description" content="{{ product.description | strip_html | escape | strip_newlines }}"/>
+      <meta property="og:title" content="{{ product.name }}"/>
+      <meta property="og:description" content="{{ product.description | strip_html | escape | strip_newlines }}"/>
+      <meta property="og:type" content="product"/>
+      <meta property="og:url" content="{{ store.url }}{{ product.url }}"/>
+      <meta property="og:image" content="{% if product.images.size > 0 %}{{ product.images.first.v600_url }}{% endif %}"/>
+      <meta property="og:site_name" content="{{ store.name }}"/>
+      <meta property="fb:admins" content="763253266"/>
+    {% elsif news and item %}
+      <meta name="description" content="{{ item.body | strip_html | escape | strip_newlines }}"/>
+      <meta property="og:title" content="{{ item.title | escape }}"/>
+      <meta property="og:description" content="{{ item.body | strip_html | escape | strip_newlines }}"/>
+      <meta property="og:type" content="article"/>
+      <meta property="og:url" content="{{ store.url }}{{ item.url }}"/>
+      <meta property="og:site_name" content="{{ store.name }}"/>
+      <meta property="fb:admins" content="763253266"/>
+    {% else %}
+      <meta name="description" content="{% if config['site_description'] %}{{ config['site_description'] }}{% endif %}"/>
+      <meta property="og:title" content="{{ store.name }}"/>
+      <meta property="og:description" content="{% if config['site_description'] %}{{ config['site_description'] }}{% endif %}"/>
+      <meta property="og:type" content="website"/>
+      <meta property="og:url" content="{{ store.url }}"/>
+      <meta property="og:image" content="{% if config['featured_image_url'] %}{{ config['featured_image_url'] }}{% endif %}"/>
+      <meta property="og:site_name" content="{{ store.name }}"/>
+      <meta property="fb:admins" content="763253266"/>
+    {% endif %}
+
+    {% if store.news %}
+      <link rel="alternate" type="application/atom+xml" title="{{ store.name }} - {{ store.news.title }} Feed" href="{{ store.url }}{{ store.news.url }}.xml"/>
+    {% endif %}
+
+    <link href='//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.3.6/slick.css"/>
+    <link href="https://s6.limitedrun.com/themes/winter/foundation-1516774186.css" media="screen" rel="stylesheet" type="text/css"/>
+    {{ 'default.css' | asset_url | stylesheet_tag: 'screen' }}
+    <link href='http://fonts.googleapis.com/css?family=Raleway:200,300,400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Bitter:400,700' rel='stylesheet' type='text/css'>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+    {{ config['favicon_image_url'] | favicon_tag }}
+
+    {% if config['google_analytics_id'] %}
+      <script type="text/javascript">
+        try {
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', '{{ config['google_analytics_id'] }}']);
+          _gaq.push(['_setDomainName', window.location.host]);
+          _gaq.push(['_trackPageview']);
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        } catch(e){}
+      </script>
+    {% endif %}
+  </head>
+  <body>
+    <aside>
+      {% if config['logo_image_url'] %}
+        <h1><a href="{{ store.url }}"><img src="{{ config['logo_image_url'] }}" alt="{{ store.name }}" /></a></h1>
+      {% else %}
+        <h1><a href="{{ store.url }}">{{ store.name }}</a></h1>
+      {% endif %}
+
+      <nav>
+        <ul>
+          {% for category in store.categories %}
+            <li>{{ category | link_to_category }}</li>
+          {% endfor %}
+
+          <div class="divider"></div>
+
+          {% if store.pages.size > 0 %}
+            {% for page in store.pages %}
+              <li>
+                {{ page | link_to_page }}
+              </li>
+            {% endfor %}
+          {% endif %}
+        </ul>
+      </nav>
+    </aside>
+
+    <div id="main">
+      <div id="top-bar">
+        <a id="toggle" href="javascript:toggleDrawer()"><i class="fa fa-bars"></i></a>
+        <form id="search" action="/products/search" method="get">
+          <input type="input" name="q" value="{{ query }}" placeholder="Search"/>
+          <a href="#" onclick="javascript:document.getElementById('search').submit();"></a>
+        </form>
+
+        <a id="cart" onclick="javascript:Store.cart.show();">View Cart</a>
+      </div>
+
+      <div class="row">
+        <div class="large-12 columns">
+          {{ content }}
+        </div>
+      </div>
+
+      <footer>
+        <strong>&copy; {{ 'now' | date: "%Y" }} {{ store.name }}</strong><br />
+        {{ powered_by_link }}
+      </footer>
+    </div>
+
+    <!-- The following store.js script is required for every page. Do not remove it. -->
+    {{ store_script_tag }}
+    <!-- /store.js -->
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.2/fastclick.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.3.6/slick.min.js"></script>
+    {{ 'default.js' | asset_url | script_tag }}
+    <script src="https://s6.limitedrun.com/themes/winter/foundation-1516774186.js"></script>
+
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>

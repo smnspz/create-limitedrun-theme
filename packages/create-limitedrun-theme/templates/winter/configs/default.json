@@ -1,0 +1,190 @@
+{
+  "name": "Winter",
+  "description": "<p>A hightly customizable and responsive based theme.</p><ul class=\"features\"><li>Responsive Design</li><li>Background Image Upload</li><li>Custom Color Pickers</li><li>Google Analytics</li><li>Bandsintown Integration</li><li>Tweet &amp; Like Buttons</li><li>Related Products</li><li>All Site Modules</li></ul>",
+  "author": {
+    "name": "Limited Run",
+    "website": "http://limitedrun.com"
+  },
+  "sort": 9,
+  "images": [
+    {
+      "thumbnail": "https://d2hzwnl4ytplf6.cloudfront.net/themes/winter-1-thumb.png",
+      "original": "https://d2hzwnl4ytplf6.cloudfront.net/themes/winter-1.png"
+    },
+    {
+      "thumbnail": "https://d2hzwnl4ytplf6.cloudfront.net/themes/winter-2-thumb.png",
+      "original": "https://d2hzwnl4ytplf6.cloudfront.net/themes/winter-2.png"
+    }
+  ],
+  "settings": {
+    "logo_image_url": {
+      "format": "image",
+      "label": "Logo Image URL (228px Width, Any Height)",
+      "help": "Enter an image URL or choose an image file to upload.",
+      "placeholder": "http://",
+      "position": 8
+    },
+    
+    "feature_product_on_front_page": {
+      "format": "boolean",
+      "label": "Display a Featured Product on Front Page",
+      "default": true,
+      "position": 10
+    },
+    "featured_product_id": {
+      "format": "text",
+      "label": "Override Featured Product",
+      "placeholder": "Product ID",
+      "help": "Enter the ID of a product you would like to feature on the homepage.",
+      "position": 11
+    },
+
+    "background_color": {
+      "format": "color",
+      "default": "#E9EFF2",
+      "label": "Background Color",
+      "position": 12
+    },
+    "background_image_url": {
+      "format": "image",
+      "label": "Background Image URL (<a href=\"http://help.limitedrun.com/articles/187-background-image-sizing\" target=\"_blank\">What size should I upload?</a>)",
+      "placeholder": "http://",
+      "position": 13
+    },
+    "background_image_repeat": {
+      "format": "boolean",
+      "label": "Tile Background Image",
+      "default": false,
+      "position": 14
+    },
+    "background_image_center_top": {
+      "format": "boolean",
+      "label": "Center Background Image",
+      "default": false,
+      "position": 15
+    },
+
+    "navigation_background_color": {
+      "format": "color",
+      "default": "#272930",
+      "label": "Navigation Background Color",
+      "position": 16
+    },
+    "navigation_link_color": {
+      "format": "color",
+      "default": "#eeeeee",
+      "label": "Navigation Link Color",
+      "position": 19
+    },
+    "navigation_link_hover_color": {
+      "format": "color",
+      "default": "#3498db",
+      "label": "Navigation Link Hover Color",
+      "position": 20
+    },
+    
+    "top_footer_background_color": {
+      "format": "color",
+      "default": "#ffffff",
+      "label": "Top & Footer Background Color",
+      "position": 21
+    },
+    "top_footer_font_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Top & Footer Font Color",
+      "position": 22
+    },
+    "top_footer_link_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Top & Footer Link Color",
+      "position": 23
+    },
+    "top_footer_link_hover_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Top & Footer Link Hover Color",
+      "position": 24
+    },
+
+    "content_font_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Content Font Color",
+      "position": 25
+    },
+    "content_link_color": {
+      "format": "color",
+      "default": "#3498db",
+      "label": "Content Link Color",
+      "position": 26
+    },
+    "content_link_hover_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Content Link Hover Color",
+      "position": 27
+    },
+    
+    "variations_background_color": {
+      "format": "color",
+      "default": "#ffffff",
+      "label": "Variations Drop Down Background Color",
+      "position": 28
+    },
+    "variations_font_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Variations Drop Down Font Color",
+      "position": 29
+    },
+
+    "button_background_color": {
+      "format": "color",
+      "default": "#3498db",
+      "label": "Button Background Color",
+      "position": 30
+    },
+    "button_text_color": {
+      "format": "color",
+      "default": "#ffffff",
+      "label": "Button Text Color",
+      "position": 31
+    },
+
+    "store_description": {
+      "format": "textarea",
+      "label": "Store Description",
+      "position": 32
+    },
+    "google_analytics_id": {
+      "format": "text",
+      "label": "Google Analytics Tracking ID",
+      "placeholder": "UA-XXXXXXXX-X",
+      "position": 33
+    },
+
+    "favicon_image_url": {
+      "format": "image",
+      "content_type": true,
+      "label": "Favicon Image URL",
+      "help": "Enter an image URL or choose an image file to upload.",
+      "placeholder": "http://",
+      "position": 34
+    },
+
+    "display_tweet_button": {
+      "format": "boolean",
+      "default": false,
+      "label": "Display Tweet Button on Product Pages",
+      "position": 35
+    },
+    "display_like_button": {
+      "format": "boolean",
+      "default": false,
+      "label": "Display Facebook Like Button on Product Pages",
+      "position": 36
+    }
+  }
+}

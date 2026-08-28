@@ -1,0 +1,103 @@
+{% if event.images.size > 0 %}
+  <div class="masthead">
+    <div class="blur" style="background-image:url({{ event.images.first.v300_url }});"></div>
+    <img class="absolute-center" src="{{ event.images.first.v300_url }}"/>
+  </div>
+{% endif %}
+
+<div class="row">
+  <div class="large-12 columns">
+    <div class="small-12 medium-8 small-centered columns">
+      <div id="variations">
+        {% if event.available? %}
+          <select id="cart_variation_id">
+            <option>Select...</option>
+            {% for variation in event.variations %}
+              {% if variation.available? %}
+                <option value="{{ variation.id }}">{{ variation.price | money }} — {{ variation.name }}</option>
+              {% else %}
+                <option disabled>{{ variation.price | money }} — {{ variation.name }} (Sold Out)</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          
+          <button class="button right" onclick="javascript:Store.cart.add(document.getElementById('cart_variation_id').options[document.getElementById('cart_variation_id').selectedIndex].value);return false;">Add to Cart</button>
+        
+        {% elsif event.announced? %}
+          <span>Tickets are coming soon.</span>
+        {% elsif event.unavailable? %}
+          <span>Tickets aren't currently available.<span>
+        {% elsif event.unlisted? %}
+          <span>This show isn't listed. That means it isn't visible to your customers.<span>
+        {% endif %}
+      </div>
+      
+      {% if event.eligible_for_availability_notices? %}
+        <div id="notification">
+          <a href="#" onclick="javascript:Store.requestNotification('Event', {{ event.id }});">Want an &quot;It's Available!&quot; Email Notification?</a>
+        </div>
+      {% endif %}
+    </div>
+    
+    <h2>
+      {{ event.name }}
+      
+      {% if event.starts_at %}
+        <small>
+          {{ event.starts_at | date: "%b" }} {{ event.starts_at | date: "%d" | ordinalize }}, {{ event.starts_at | date: "%Y" }}
+          at {{ event.venue.name }}, {{ event.venue.city }}
+        </small>
+      {% endif %}
+    </h2>
+    {{ event.description | simple_format }}
+    
+    <h3>Directions</h3>
+      <p><strong>{{ event.venue.name }}</strong> (<a href="{{ event.venue.maps_url }}" target="_blank">Map</a>)<br/>
+      {{ event.venue.street_address_1 }}<br />
+      {% if event.venue.street_address_2 != '' %}
+        {{ event.venue.street_address_2 }},
+      {% endif %}
+      {{ event.venue.city }},
+      {{ event.venue.state }}
+      {{ event.venue.postal_code }}<br />
+      {{ event.venue.country }}</p>
+    
+    {% if event.soundcloud_playlist_id %}
+      <iframe width="100%" height="300" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/{{ event.soundcloud_playlist_id }}&amp;auto_play=false&amp;hide_related=false&amp;visual=true"></iframe>
+    {% endif %}
+    
+    <!-- <ul class="rslides" id="product-gallery">
+      {% for image in event.images %}
+        <li>{{ event.images.first.v600_url | img_tag }}</li>
+      {% endfor %}
+    </ul>
+    
+    {% if event.images.size > 1 %}
+      <ul id="product-gallery-pager">
+        {% for image in event.images %}
+          <li><a href="#">{{ image.v150_url | img_tag }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %} -->
+      
+    {% if config['display_tweet_button'] or config['display_like_button'] %}
+      <ul id="social">
+        {% if config['display_tweet_button'] %}
+          <li>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-text="{{ event.name | escape }} at {{ store.name | escape }}" data-count="none">Tweet</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+          </li>
+        {% endif %}
+        {% if config['display_like_button'] %}
+          <li>
+            <iframe src="//www.facebook.com/plugins/like.php?href={{ store.url }}{{ event.url }}&send=false&layout=button_count&width=52&show_faces=false&action=like&colorscheme=light&font&height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:52px; height:35px;" allowTransparency="true"></iframe>
+          </li>
+        {% endif %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+  
+{% if event.venue %}
+  <iframe width="100%" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="{{ event.venue.maps_url }}&iwloc=near&output=embed"></iframe>
+{% endif %}

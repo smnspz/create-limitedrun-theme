@@ -1,0 +1,15 @@
+{% paginate products by 24 %}
+  <h2>Search Results for "{{ query | capitalize }}"</h2>
+  
+  {% if products.size > 0 %}
+    <div class="row small-up-1 medium-up-2 large-up-{{ config['grid_items_per_row'] }}">
+      {% for product in products %}
+        {% include 'product-item.html' %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <h4>No Results Found</h4>
+  {% endif %}
+  
+  {{ products_pagination }}
+{% endpaginate %}

@@ -1,0 +1,12 @@
+{% paginate news.items by 12 %}
+  <h2>{{ page.title }}</h2>
+  
+  {% for item in news.items %}
+    <article>
+      <h3>{{ item | link_to_news_item }} <small>{{ item.published_at | date: "%d %b %Y" }}</small></h3>
+      {{ item.body }}
+    </article>
+  {% endfor %}
+  
+  {{ news.items_pagination }}
+{% endpaginate %}

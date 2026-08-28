@@ -1,0 +1,151 @@
+{
+  "name": "Binoculars",
+  "description": "<p>A hightly customizable and responsive based theme.</p><ul class=\"features\"><li>Responsive Design</li><li>Background Image Upload</li><li>Custom Color Pickers</li><li>Google Analytics</li><li>Bandsintown Integration</li><li>Tweet &amp; Like Buttons</li><li>Related Products</li><li>All Site Modules</li></ul>",
+  "author": {
+    "name": "Limited Run",
+    "website": "http://limitedrun.com"
+  },
+  "sort": 11,
+  "images": [
+    {
+      "thumbnail": "https://d2hzwnl4ytplf6.cloudfront.net/themes/clarity-4-thumb.png",
+      "original": "https://d2hzwnl4ytplf6.cloudfront.net/themes/clarity-4.png"
+    },
+    {
+      "thumbnail": "https://d2hzwnl4ytplf6.cloudfront.net/themes/clarity-5-thumb.png",
+      "original": "https://d2hzwnl4ytplf6.cloudfront.net/themes/clarity-5.png"
+    }
+  ],
+  "settings": {
+    "header_image_url": {
+      "format": "image",
+      "label": "Header Image URL (Any Width, Any Height)",
+      "help": "Enter an image URL or choose an image file to upload.",
+      "placeholder": "http://",
+      "position": 10
+    },
+    "stretch_header_image": {
+      "format": "boolean",
+      "default": false,
+      "label": "Stretch Header Image",
+      "position": 11
+    },
+    "featured_image_url": {
+      "format": "image",
+      "label": "Featured Image URL (950px Width, Any Height)",
+      "help": "Enter an image URL or choose an image file to upload.",
+      "placeholder": "http://",
+      "position": 12
+    },
+    "featured_image_destination": {
+      "format": "text",
+      "label": "Destination URL for Featured Image",
+      "help": "Enter a page URL for the featured image.",
+      "placeholder": "http://",
+      "position": 13
+    },
+
+    "background_color": {
+      "format": "color",
+      "default": "#eeeeee",
+      "label": "Background Color",
+      "position": 14
+    },
+    "background_image_url": {
+      "format": "image",
+      "label": "Background Image URL (<a href=\"http://help.limitedrun.com/articles/187-background-image-sizing\" target=\"_blank\">What size should I upload?</a>)",
+      "placeholder": "http://",
+      "position": 15
+    },
+    "background_image_repeat": {
+      "format": "boolean",
+      "label": "Tile Background Image",
+      "default": false,
+      "position": 16
+    },
+    "background_image_center_top": {
+      "format": "boolean",
+      "label": "Center Background Image",
+      "default": false,
+      "position": 17
+    },
+
+    "navigation_background_color": {
+      "format": "color",
+      "default": "#272930",
+      "label": "Navigation Background Color",
+      "position": 20
+    },
+    "navigation_link_color": {
+      "format": "color",
+      "default": "#eeeeee",
+      "label": "Navigation Link Color",
+      "position": 21
+    },
+
+    "content_background_color": {
+      "format": "color",
+      "default": "#ffffff",
+      "label": "Content Background Color",
+      "position": 23
+    },
+    "content_font_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Content Font Color",
+      "position": 24
+    },
+    "accent_color": {
+      "format": "color",
+      "default": "#3498db",
+      "label": "Accent Color",
+      "position": 25
+    },
+
+    "store_description": {
+      "format": "textarea",
+      "label": "Store Description",
+      "position": 33
+    },
+    "google_analytics_id": {
+      "format": "text",
+      "label": "Google Analytics Tracking ID",
+      "placeholder": "UA-XXXXXXXX-X",
+      "position": 34
+    },
+
+    "favicon_image_url": {
+      "format": "image",
+      "content_type": true,
+      "label": "Favicon Image URL",
+      "help": "Enter an image URL or choose an image file to upload.",
+      "placeholder": "http://",
+      "position": 35
+    },
+
+    "display_tweet_button": {
+      "format": "boolean",
+      "default": false,
+      "label": "Display Tweet Button on Product Pages",
+      "position": 36
+    },
+    "display_like_button": {
+      "format": "boolean",
+      "default": false,
+      "label": "Display Facebook Like Button on Product Pages",
+      "position": 37
+    },
+    "roster_dropdown": {
+      "format": "boolean",
+      "default": false,
+      "label": "Display Artists in Dropdown",
+      "position": 41
+    },
+    "display_bandsintown_widget": {
+      "format": "boolean",
+      "default": false,
+      "label": "Display Bandsintown Widget on Roster Pages",
+      "position": 42
+    }
+  }
+}

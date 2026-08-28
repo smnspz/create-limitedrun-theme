@@ -1,0 +1,14 @@
+{% if config['featured_image_url'] != null %}
+  <a href="{{ config['featured_image_destination'] }}"><img src="{{ config['featured_image_url'] }}" /></a>
+{% endif %}
+
+{% paginate store.products by 24 %}
+  <h2>Store</h2>
+  <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+    {% for product in store.products %}
+      {% include 'product-item.html' %}
+    {% endfor %}
+  </ul>
+  
+  {{ store.products_pagination }}
+{% endpaginate %}

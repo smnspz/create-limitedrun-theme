@@ -1,0 +1,96 @@
+<div id="product">
+  <div class="row">
+    <div class="small-12 medium-8 small-centered columns">
+      <div class="slider">
+        {% for image in product.images %}
+          <div>{{ image.v600_url | img_tag }}</div>
+        {% endfor %}
+      </div>
+      
+      <div id="variations">
+        {% if product.available? %}
+          <select id="cart_variation_id">
+            <option selected disabled>Select...</option>
+            {% for variation in product.variations %}
+              {% if variation.available? %}
+                <option value="{{ variation.id }}">{{ variation.price | money }} — {{ variation.name }}</option>
+              {% else %}
+                <option disabled>{{ variation.price | money }} — {{ variation.name }} (Sold Out)</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          
+          <button class="button right" onclick="javascript:Store.cart.add(document.getElementById('cart_variation_id').options[document.getElementById('cart_variation_id').selectedIndex].value);return false;">Add to Cart</button>
+        
+        {% elsif product.announced? %}
+          <span>
+            This item is coming soon.
+          </span>
+            
+        {% elsif product.unavailable? %}
+          <span>
+            This item isn't available.
+          </span>
+          
+        {% elsif product.unlisted? %}
+          <span>
+            This item isn't listed. That means it isn't visible to your customers.
+          </span>
+        {% endif %}
+      </div>
+      
+      {% if product.eligible_for_availability_notices? %}
+        <div id="notification">
+          <a href="#" onclick="javascript:Store.requestNotification('Product', {{ product.id }});">Want an &quot;It's Available!&quot; Email Notification?</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+    
+  <div class="row">
+    <div class="large-12 columns">
+      <h2>
+        {{ product.name }}
+        {% if product.music_catalog_number %}
+          <small>{{ product.music_catalog_number }}</small>
+        {% endif %}
+      </h2>
+      
+      {{ product.description | simple_format }}
+      
+      {% if product.soundcloud_playlist_id %}
+        <iframe width="100%" height="300" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/{{ product.soundcloud_playlist_id }}&amp;auto_play=false&amp;hide_related=false&amp;visual=true"></iframe>
+      {% endif %}
+      
+      {% if product.music_track_listings %}
+        <h3>Track Listing</h3>
+          <ol>
+            {% for track in product.music_track_listings %}
+              <li>{{ track.id3_track_name }}</li>
+            {% endfor %}
+          </ol>
+      {% endif %}
+          
+      {% if product.music_pressing_information %}
+        <h3>Pressing Information</h3>
+        {{ product.music_pressing_information | simple_format }}
+      {% endif %}
+    
+      {% if config['display_tweet_button'] or config['display_like_button'] %}
+        <ul id="social">
+          {% if config['display_tweet_button'] %}
+            <li>
+              <a href="https://twitter.com/share" class="twitter-share-button" data-text="{{ product.name | escape }} at {{ store.name | escape }}" data-count="none">Tweet</a>
+              <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+            </li>
+          {% endif %}
+          {% if config['display_like_button'] %}
+            <li>
+              <iframe src="//www.facebook.com/plugins/like.php?href={{ store.url }}{{ product.url }}&send=false&layout=button_count&width=52&show_faces=false&action=like&colorscheme=light&font&height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:76px; height:35px;" allowTransparency="true"></iframe>
+            </li>
+          {% endif %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+</div>

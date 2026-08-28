@@ -1,0 +1,790 @@
+{
+  "name": "Hyde",
+  "description": "<p>A hightly customizable and responsive based theme.</p><ul class=\"features\"><li>Responsive Design</li><li>Featured Image</li><li>Custom Color Pickers</li><li>Google Analytics</li><li>Bandsintown Integration</li><li>Tweet &amp; Like Buttons</li><li>All Site Modules</li></ul>",
+  "author": {
+    "name": "Tangled Talk Records",
+    "website": "http://www.tangledtalk.com"
+  },
+  "sort": 4,
+  "images": [
+    {
+      "thumbnail": "https://s9.limitedrun.com/images/1229767/hyde-1-thumb.png",
+      "original": "https://s9.limitedrun.com/images/1229768/hyde-1.png"
+    },
+    {
+      "thumbnail": "https://s9.limitedrun.com/images/1229769/hyde-2-thumb.png",
+      "original": "https://s9.limitedrun.com/images/1229770/hyde-2.png"
+    }
+  ],
+  "settings": {
+    "site_identifiers": {
+      "format": "heading",
+      "label": "Site Identifiers",
+      "position": 1
+    },
+    "store_description": {
+      "format": "textarea",
+      "label": "Store Description",
+      "position": 2
+    },
+    "google_analytics_id": {
+      "format": "text",
+      "label": "Google Analytics Tracking ID",
+      "placeholder": "UA-XXXXXXXX-X",
+      "position": 3
+    },
+    "favicon_image_url": {
+      "format": "image",
+      "content_type": true,
+      "label": "Favicon Image",
+      "placeholder": "http://",
+      "position": 4
+    },
+    
+    "typography": {
+      "format": "heading",
+      "label": "Typography",
+      "position": 10
+    },
+    "body_font": {
+      "format": "select",
+      "default": "Asap",
+      "label": "Body Font",
+      "position": 11,
+      "options": [
+        {
+          "value": "Asap",
+          "name": "Asap"
+        },
+        {
+          "value": "Abril Fatface",
+          "name": "Abril Fatface"
+        },
+        {
+          "value": "Crimson Text",
+          "name": "Crimson Text"
+        },
+        {
+          "value": "Droid Sans",
+          "name": "Droid Sans"
+        },
+        {
+          "value": "Droid Serif",
+          "name": "Droid Serif"
+        },
+        {
+          "value": "EB Garamond",
+          "name": "EB Garamond"
+        },
+        {
+          "value": "Georgia",
+          "name": "Georgia"
+        },
+        {
+          "value": "Helvetica",
+          "name": "Helvetica"
+        },
+        {
+          "value": "Hind",
+          "name": "Hind"
+        },
+        {
+          "value": "Inconsolata",
+          "name": "Inconsolata"
+        },
+        {
+          "value": "Karla",
+          "name": "Karla"
+        },
+        {
+          "value": "Lato",
+          "name": "Lato"
+        },
+        {
+          "value": "Libre Baskerville",
+          "name": "Libre Baskerville"
+        },
+        {
+          "value": "Lobster",
+          "name": "Lobster"
+        },
+        {
+          "value": "Merriweather",
+          "name": "Merriweather"
+        },
+        {
+          "value": "Montserrat",
+          "name": "Monttserrat"
+        },
+        {
+          "value": "Open Sans",
+          "name": "Open Sans"
+        },
+        {
+          "value": "Open Sans Condensed",
+          "name": "Open Sans Condensed"
+        },
+        {
+          "value": "Oswald",
+          "name": "Oswald"
+        },
+        {
+          "value": "Playfair Display",
+          "name": "Playfair Display"
+        },
+        {
+          "value": "Poppins",
+          "name": "Poppins"
+        },
+        {
+          "value": "Raleway",
+          "name": "Raleway"
+        },
+        {
+          "value": "Roboto",
+          "name": "Roboto"
+        },
+        {
+          "value": "Roboto Condensed",
+          "name": "Roboto Condensed"
+        },
+        {
+          "value": "Roboto Slab",
+          "name": "Roboto Slab"
+        },
+        {
+          "value": "Source Sans Pro",
+          "name": "Source Sans Pro"
+        },
+        {
+          "value": "Work Sans",
+          "name": "Work Sans"
+        }
+      ]
+    },
+    "heading_font": {
+      "format": "select",
+      "default": "Poppins",
+      "label": "Heading Font",
+      "position": 12,
+      "options": [
+        {
+          "value": "Poppins",
+          "name": "Poppins"
+        },
+        {
+          "value": "Abril Fatface",
+          "name": "Abril Fatface"
+        },
+        {
+          "value": "Crimson Text",
+          "name": "Crimson Text"
+        },
+        {
+          "value": "Droid Sans",
+          "name": "Droid Sans"
+        },
+        {
+          "value": "Droid Serif",
+          "name": "Droid Serif"
+        },
+        {
+          "value": "EB Garamond",
+          "name": "EB Garamond"
+        },
+        {
+          "value": "Georgia",
+          "name": "Georgia"
+        },
+        {
+          "value": "Helvetica",
+          "name": "Helvetica"
+        },
+        {
+          "value": "Hind",
+          "name": "Hind"
+        },
+        {
+          "value": "Inconsolata",
+          "name": "Inconsolata"
+        },
+        {
+          "value": "Karla",
+          "name": "Karla"
+        },
+        {
+          "value": "Lato",
+          "name": "Lato"
+        },
+        {
+          "value": "Libre Baskerville",
+          "name": "Libre Baskerville"
+        },
+        {
+          "value": "Lobster",
+          "name": "Lobster"
+        },
+        {
+          "value": "Merriweather",
+          "name": "Merriweather"
+        },
+        {
+          "value": "Montserrat",
+          "name": "Monttserrat"
+        },
+        {
+          "value": "Open Sans",
+          "name": "Open Sans"
+        },
+        {
+          "value": "Open Sans Condensed",
+          "name": "Open Sans Condensed"
+        },
+        {
+          "value": "Oswald",
+          "name": "Oswald"
+        },
+        {
+          "value": "Playfair Display",
+          "name": "Playfair Display"
+        },
+        {
+          "value": "Poppins",
+          "name": "Poppins"
+        },
+        {
+          "value": "Raleway",
+          "name": "Raleway"
+        },
+        {
+          "value": "Roboto",
+          "name": "Roboto"
+        },
+        {
+          "value": "Roboto Condensed",
+          "name": "Roboto Condensed"
+        },
+        {
+          "value": "Roboto Slab",
+          "name": "Roboto Slab"
+        },
+        {
+          "value": "Source Sans Pro",
+          "name": "Source Sans Pro"
+        },
+        {
+          "value": "Work Sans",
+          "name": "Work Sans"
+        }
+      ]
+    },
+    "heading_font_weight": {
+      "format": "select",
+      "default": "600",
+      "label": "Heading Font Weight",
+      "position": 13,
+      "options": [
+        {
+          "value": "300",
+          "name": "Light 300"
+        },
+        {
+          "value": "400",
+          "name": "Normal 400"
+        },
+        {
+          "value": "600",
+          "name": "Semi Bold 600"
+        },
+        {
+          "value": "700",
+          "name": "Bold 700"
+        },
+        {
+          "value": "900",
+          "name": "Extra Bold 900"
+        }
+      ]
+    },
+    "base_font_size": {
+      "format": "text",
+      "default": "13",
+      "label": "Base Font Size (px)",
+      "position": 14
+    },
+    
+    "main_site_attributes": {
+      "format": "heading",
+      "label": "Main Site Attributes",
+      "position": 20
+    },
+    "max_content_width": {
+      "format": "text",
+      "default": "1200",
+      "label": "Max Content Width (px)",
+      "position": 21
+    },
+    "background_color": {
+      "format": "color",
+      "default": "#fafafa",
+      "label": "Background Color",
+      "position": 22
+    },
+    "main_text_color": {
+      "format": "color",
+      "default": "#666666",
+      "label": "Main Text Color",
+      "position": 23
+    },
+    "heading_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Heading Text Color",
+      "position": 24
+    },
+    "accent_color": {
+      "format": "color",
+      "default": "#ff4422",
+      "label": "Accent Color",
+      "position": 25
+    },
+    "input_select_color": {
+      "format": "color",
+      "default": "#ffffff",
+      "label": "Input / Select Color",
+      "position": 26
+    },
+    "border_color": {
+      "format": "color",
+      "default": "#f4f4f4",
+      "label": "Border Color",
+      "position": 27
+    },
+    
+    "header_attributes": {
+      "format": "heading",
+      "label": "Header Attributes",
+      "position": 30
+    },
+    "logo_image_url": {
+      "format": "image",
+      "label": "Logo Image",
+      "placeholder": "http://",
+      "position": 31
+    },
+    "top_bar_background_color": {
+      "format": "color",
+      "default": "#272a32",
+      "label": "Top Bar Background Color",
+      "position": 33
+    },
+    "top_bar_icon_color": {
+      "format": "color",
+      "default": "#888888",
+      "label": "Top Bar Icon Color",
+      "position": 34
+    },
+    "navigation_background_color": {
+      "format": "color",
+      "default": "#ffffff",
+      "label": "Navigation Background Color",
+      "position": 35
+    },
+    "navigation_link_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Navigation Link Color",
+      "position": 36
+    },
+    "navigation_font": {
+      "format": "select",
+      "default": "heading",
+      "label": "Navigation Font",
+      "position": 37,
+      "options": [
+        {
+          "value": "heading",
+          "name": "Use Heading Font"
+        },
+        {
+          "value": "body",
+          "name": "Use Body Font"
+        }
+      ]
+    },
+    "show_top_bar": {
+      "format": "boolean",
+      "default": false,
+      "label": "Show Top Bar for Social Icons",
+      "position": 38
+    },
+    "sticky_navigation": {
+      "format": "boolean",
+      "default": false,
+      "label": "Sticky Navigation",
+      "position": 39
+    },
+    "shrink_navigation_on_scroll": {
+      "format": "boolean",
+      "default": false,
+      "label": "Shrink Navigation on Scroll",
+      "position": 40
+    },
+    "show_navigation_borders": {
+      "format": "boolean",
+      "default": true,
+      "label": "Show Navigation Borders",
+      "position": 41
+    },
+    "show_artists_in_dropdown": {
+      "format": "boolean",
+      "default": false,
+      "label": "Show Artists in Dropdown",
+      "position": 42
+    },
+    
+    "footer_attributes": {
+      "format": "heading",
+      "label": "Footer Attributes",
+      "position": 50
+    },
+    "footer_background_color": {
+      "format": "color",
+      "default": "#272a32",
+      "label": "Footer Background Color",
+      "position": 51
+    },
+    "footer_link_color": {
+      "format": "color",
+      "default": "#666666",
+      "label": "Footer Link Color",
+      "position": 52
+    },
+    
+    "featured_carousel": {
+      "format": "heading",
+      "label": "Featured Carousel",
+      "position": 80
+    },
+    "featured_carousel_location": {
+      "format": "select",
+      "default": "home",
+      "label": "Featured Carousel Location",
+      "position": 81,
+      "options": [
+        {
+          "value": "home",
+          "name": "Home"
+        },
+        {
+          "value": "news",
+          "name": "News"
+        },
+        {
+          "value": "both",
+          "name": "Home & News"
+        }
+      ]
+    },
+    "featured_carousel_transition": {
+      "format": "select",
+      "default": "fade",
+      "label": "Featured Carousel Transition",
+      "position": 82,
+      "options": [
+        {
+          "value": "fade",
+          "name": "Fade"
+        },
+        {
+          "value": "slide",
+          "name": "Slide"
+        }
+      ]
+    },
+    "stretch_featured_carousel": {
+      "format": "boolean",
+      "default": true,
+      "label": "Stretch Featured Carousel",
+      "position": 83
+    },
+    "caption_background_color": {
+      "format": "color",
+      "default": "#ffffff",
+      "label": "Caption Background Color",
+      "position": 84
+    },
+    "caption_text_color": {
+      "format": "color",
+      "default": "#333333",
+      "label": "Caption Text Color",
+      "position": 85
+    },
+    "featured_image_url_1": {
+      "format": "image",
+      "label": "Featured Image 1",
+      "placeholder": "http://",
+      "position": 91
+    },
+    "featured_image_destination_1": {
+      "format": "text",
+      "label": "Destination URL for Featured Image 1",
+      "placeholder": "http://",
+      "position": 92
+    },
+    "featured_image_caption_1": {
+      "format": "text",
+      "label": "Caption for Featured Image 1",
+      "position": 93
+    },
+    "featured_image_url_2": {
+      "format": "image",
+      "label": "Featured Image 2",
+      "placeholder": "http://",
+      "position": 94
+    },
+    "featured_image_destination_2": {
+      "format": "text",
+      "label": "Destination URL for Featured Image 2",
+      "placeholder": "http://",
+      "position": 95
+    },
+    "featured_image_caption_2": {
+      "format": "text",
+      "label": "Caption for Featured Image 2",
+      "position": 96
+    },
+    "featured_image_url_3": {
+      "format": "image",
+      "label": "Featured Image 3",
+      "placeholder": "http://",
+      "position": 97
+    },
+    "featured_image_destination_3": {
+      "format": "text",
+      "label": "Destination URL for Featured Image 3",
+      "placeholder": "http://",
+      "position": 98
+    },
+    "featured_image_caption_3": {
+      "format": "text",
+      "label": "Caption for Featured Image 3",
+      "position": 99
+    },
+    
+    "product_grids": {
+      "format": "heading",
+      "label": "Product Grids",
+      "position": 100
+    },
+    "grid_items_per_row": {
+      "format": "select",
+      "default": "4",
+      "label": "Grid Items Per Row (Large Screens)",
+      "position": 102,
+      "options": [
+        {
+          "value": "2",
+          "name": "2"
+        },
+        {
+          "value": "3",
+          "name": "3"
+        },
+        {
+          "value": "4",
+          "name": "4"
+        },
+        {
+          "value": "5",
+          "name": "5"
+        },
+        {
+          "value": "6",
+          "name": "6"
+        }
+      ]
+    },
+    "grid_items_hover_effect": {
+      "format": "select",
+      "default": "light-overlay",
+      "label": "Grid Items Hover Effect",
+      "position": 103,
+      "options": [
+        {
+          "value": "light-overlay",
+          "name": "Light Overlay"
+        },
+        {
+          "value": "dark-overlay",
+          "name": "Dark Overlay"
+        },
+        {
+          "value": "alternative-image",
+          "name": "Alternative Image"
+        },
+        {
+          "value": "do-nothing",
+          "name": "Do Nothing"
+        }
+      ]
+    },
+    "grid_item_overlay_text": {
+      "format": "text",
+      "label": "Grid Item Overlay Text",
+      "default": "View Item",
+      "position": 104
+    },
+    
+    "product_pages": {
+      "format": "heading",
+      "label": "Product Pages",
+      "position": 120
+    },
+    "image_thumbnails": {
+      "format": "select",
+      "default": "bottom",
+      "label": "Image Thumbnails",
+      "position": 121,
+      "options": [
+        {
+          "value": "top",
+          "name": "Top"
+        },
+        {
+          "value": "bottom",
+          "name": "Bottom"
+        },
+        {
+          "value": "right",
+          "name": "Right"
+        },
+        {
+          "value": "left",
+          "name": "Left"
+        }
+      ]
+    },
+    "zoom_image_on_hover": {
+      "format": "boolean",
+      "default": true,
+      "label": "Zoom Image on Hover",
+      "position": 122
+    },
+    "show_facebook_share_button": {
+      "format": "boolean",
+      "default": false,
+      "label": "Show Facebook Share Button",
+      "position": 123
+    },
+    "show_twitter_share_button": {
+      "format": "boolean",
+      "default": false,
+      "label": "Show Twitter Share Button",
+      "position": 124
+    },
+    "show_email_share_button": {
+      "format": "boolean",
+      "default": false,
+      "label": "Show Email Share Button",
+      "position": 125
+    },
+    "show_pinterest_share_button": {
+      "format": "boolean",
+      "default": false,
+      "label": "Show Pinterest Share Button",
+      "position": 126
+    },
+    "show_related_products_by_category": {
+      "format": "boolean",
+      "default": true,
+      "label": "Show Related Products by Category",
+      "position": 127
+    },
+    "show_related_products_by_artist": {
+      "format": "boolean",
+      "default": false,
+      "label": "Show Related Products by Artist",
+      "help": "Requires Custom Theme Fields",
+      "position": 128
+    },
+    
+    "newsletter": {
+      "format": "heading",
+      "label": "Newsletter",
+      "position": 135
+    },
+    "show_newsletter_subscribe": {
+      "format": "boolean",
+      "default": true,
+      "label": "Show Newsletter Subscribe Form in Footer",
+      "position": 136
+    },
+
+    "social_identifiers": {
+      "format": "heading",
+      "label": "Social Identifiers",
+      "position": 140
+    },
+    "show_social_icons": {
+      "format": "boolean",
+      "default": false,
+      "label": "Show Social Icons",
+      "position": 141
+    },
+    "facebook_url": {
+      "format": "text",
+      "label": "Facebook URL",
+      "placeholder": "http://facebook.com/username",
+      "position": 142
+    },
+    "twitter_url": {
+      "format": "text",
+      "label": "Twitter URL",
+      "placeholder": "http://twitter.com/username",
+      "position": 143
+    },
+    "tumblr_url": {
+      "format": "text",
+      "label": "Tumblr URL",
+      "placeholder": "http://username.tumblr.com",
+      "position": 144
+    },
+    "youtube_url": {
+      "format": "text",
+      "label": "YouTube URL",
+      "placeholder": "http://youtube.com/username",
+      "position": 145
+    },
+    "instagram_url": {
+      "format": "text",
+      "label": "Instagram URL",
+      "placeholder": "http://instagram.com/username",
+      "position": 146
+    },
+    "soundcloud_url": {
+      "format": "text",
+      "label": "Soundcloud URL",
+      "placeholder": "http://soundcloud.com/username",
+      "position": 147
+    },
+    "spotify_url": {
+      "format": "text",
+      "label": "Spotify URL",
+      "placeholder": "https://open.spotify.com/user/username",
+      "position": 148
+    },
+    
+    "miscellaneous": {
+      "format": "heading",
+      "label": "Miscellaneous",
+      "position": 150
+    },
+    "show_bandsintown_embed_on_artist_pages": {
+      "format": "boolean",
+      "default": true,
+      "label": "Show Bandsintown Embed on Artist Pages",
+      "position": 151
+    }
+  }
+}

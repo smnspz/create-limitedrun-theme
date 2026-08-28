@@ -1,0 +1,18 @@
+{% paginate roster.items by 12 %}
+  <h2>{{ page.title }}</h2>
+  <ul class="medium-block-grid-2 small-block-grid-1">
+    {% for item in roster.items %}
+      <li>
+        <a href="{{ item.url }}">
+          <div class="overlay-wrapper">
+            <img src="{{ item.images.first.v600_url }}" alt="{{ item.name }}" />
+            <div class="overlay"><span>View Artist</span></div>
+          </div>
+        </a>
+        <div class="caption">{{ item | link_to_roster_item }}</div>
+      </li>
+    {% endfor %}
+  </ul>
+  
+  {{ roster.items_pagination }}
+{% endpaginate %}

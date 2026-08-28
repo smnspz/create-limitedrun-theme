@@ -1,0 +1,44 @@
+<h2>{{ store.mailbox.title }}</h2>
+
+{% if message.received %}
+  <p>Thanks, we've received your message!</p>
+{% elsif message.errors %}
+  <p>There was a problem sending that message.</p>
+
+  <ul>
+    {% for error in message.errors %}
+      <li>{{ error }}.</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% contact_form %}
+  {% comment %}
+    The contact_form tag has three required fields:
+      * message[name]
+      * message[email]
+      * message[body]
+      
+    There is also an option field that you can add:
+      * message[subject]
+  {% endcomment %}
+  
+  <div class="row">
+    <div class="small-12 medium-4 columns">
+      <label for="message[name]">Name</label>
+      <input type="text" name="message[name]" value="{{ message.name }}" id="message[name]"/>
+    </div>
+    
+    <div class="small-12 medium-4 columns">
+      <label for="message[email]">Email</label>
+      <input type="text" name="message[email]" value="{{ message.email }}" id="message[email]"/>
+    </div>
+  </div>
+  
+  <div class="row column">
+    <label for="message[body]">Message</label>
+    <textarea name="message[body]" id="message[body]">{{ message.body }}</textarea>
+    {% captcha clean %}<br/>
+    <button class="button" type="submit">Send Message</button>
+  </div>
+{% endcontact_form %}

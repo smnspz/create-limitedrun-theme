@@ -1,0 +1,23 @@
+<li class="product">
+  <a href="{{ product.url }}">
+    <div class="overlay-wrapper">
+      <img src="{{ product.images.first.v600_url }}" alt="{{ product.name }}" />
+      <div class="overlay"><span>View Item</span></div>
+    </div>
+  </a>
+  <div class="caption">
+    {{ product | link_to_product }}
+    
+    <div class="divider"></div>
+    
+    {% if product.available? %}
+      {{ product.price_range | money | join: ' - ' }}
+    {% elsif product.announced? %}
+      Coming Soon
+    {% elsif product.unavailable? %}
+      Unavailable
+    {% elsif product.unlisted? %}
+      Not Listed
+    {% endif %}
+  </div>
+</li>

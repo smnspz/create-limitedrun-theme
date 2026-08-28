@@ -1,14 +1,24 @@
 #!/usr/bin/env node
 import { execSync } from 'node:child_process';
-import { cp, readFile, rename, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { cp, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
 import * as p from '@clack/prompts';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const TEMPLATE_DIR = path.join(HERE, '..', 'templates', 'skeleton');
+const TEMPLATES_ROOT = path.join(HERE, '..', 'templates');
+
+/** Starter themes bundled with the scaffolder (directories under templates/). */
+const TEMPLATES = [
+  { id: 'skeleton', label: 'Skeleton', hint: 'Minimal starting point, no snippets' },
+  { id: 'telescope', label: 'Telescope', hint: 'Responsive, background image, color pickers' },
+  { id: 'hyde', label: 'Hyde', hint: 'Featured image, highly customizable' },
+  { id: 'binoculars', label: 'Binoculars', hint: 'Responsive, background image' },
+  { id: 'winter', label: 'Winter', hint: 'Responsive, background image' },
+  { id: 'winter-peak', label: 'Winter Peak', hint: 'Winter with a bolder header' },
+] as const;
 
 /** This package's version, used to pin the theme's @limitedrun/cli dependency. */
 async function ownVersion(): Promise<string> {
@@ -48,6 +58,7 @@ npm run build    # produce dist/${name}.zip
 \`\`\`
 
 Edit \`store.json\` to change the mock data the preview renders against.
+\`store.json\` is a local mock only — it is never uploaded to Limited Run.
 
 ## Deploy
 
@@ -55,11 +66,21 @@ Edit \`store.json\` to change the mock data the preview renders against.
 under Storefront → Themes.
 `;
 
+async function confirm(message: string): Promise<boolean> {
+  const answer = await p.confirm({ message });
+  if (p.isCancel(answer)) {
+    p.cancel('Cancelled.');
+    process.exit(1);
+  }
+  return answer;
+}
+
 async function main(): Promise<void> {
   const { values, positionals } = parseArgs({
     args: process.argv.slice(2),
     allowPositionals: true,
     options: {
+      template: { type: 'string', short: 't' },
       install: { type: 'boolean' },
       'no-install': { type: 'boolean' },
       git: { type: 'boolean' },
@@ -89,6 +110,26 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
+  // Resolve the starter template.
+  let templateId = values.template;
+  if (templateId && !TEMPLATES.some((t) => t.id === templateId)) {
+    p.cancel(`Unknown template '${templateId}'. Options: ${TEMPLATES.map((t) => t.id).join(', ')}`);
+    process.exit(1);
+  }
+  if (!templateId) {
+    if (values.yes) {
+      templateId = 'skeleton';
+    } else {
+      const picked = await p.select({
+        message: 'Which starter theme?',
+        options: TEMPLATES.map((t) => ({ value: t.id, label: t.label, hint: t.hint })),
+        initialValue: 'skeleton',
+      });
+      if (p.isCancel(picked)) return p.cancel('Cancelled.');
+      templateId = picked as string;
+    }
+  }
+
   // Decide install / git, honouring flags and --yes.
   const doInstall = values['no-install']
     ? false
@@ -102,9 +143,11 @@ async function main(): Promise<void> {
       : await confirm('Initialize a git repository?');
 
   const s = p.spinner();
-  s.start('Creating theme');
+  s.start(`Creating theme from "${templateId}"`);
 
-  await cp(TEMPLATE_DIR, target, { recursive: true });
+  // Theme files, then the shared store.json mock + .gitignore overlaid on top.
+  await cp(path.join(TEMPLATES_ROOT, templateId), target, { recursive: true });
+  await cp(path.join(TEMPLATES_ROOT, '_shared'), target, { recursive: true });
   await rename(path.join(target, '_gitignore'), path.join(target, '.gitignore'));
   await writeFile(path.join(target, 'package.json'), themePackageJson(name, await ownVersion()));
   await writeFile(path.join(target, 'README.md'), THEME_README(name));
@@ -138,15 +181,6 @@ async function main(): Promise<void> {
       `  npm run dev`,
     ].join('\n'),
   );
-}
-
-async function confirm(message: string): Promise<boolean> {
-  const answer = await p.confirm({ message });
-  if (p.isCancel(answer)) {
-    p.cancel('Cancelled.');
-    process.exit(1);
-  }
-  return answer;
 }
 
 main().catch((err) => {

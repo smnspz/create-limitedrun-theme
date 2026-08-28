@@ -1,0 +1,28 @@
+{% paginate store.events by 12 %}
+  <h2>{{ page.title }}</h2>
+  
+  <ul class="large-block-grid-2 small-block-grid-1">
+    {% for event in store.events %}
+      <li>
+        <a href="{{ event.url }}">
+          <div class="image-wrapper">
+            <img src="{{ event.images.first.v600_url }}" alt="{{ event.name }}" />
+            <div class="overlay"><span>View Event</span></div>
+          </div>
+        </a>
+        <div class="caption">
+          {{ event.name }}
+          <div class="divider"></div>
+          {% if event.starts_at %}
+            {{ event.starts_at | date: "%b" }} {{ event.starts_at | date: "%d" | ordinalize }} /
+          {% else %}
+            TBA
+          {% endif %}
+          {{ event.price_range | money | join: ' - ' }}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+  
+  {{ store.events_pagination }}
+{% endpaginate %}

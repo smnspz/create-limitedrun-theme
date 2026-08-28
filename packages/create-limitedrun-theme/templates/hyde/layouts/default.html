@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      {% if product %}
+        {{ product.name }} -
+      {% elsif category %}
+        {{ category.name }} -
+      {% elsif page %}
+        {{ page.title }} -
+      {% endif %}
+      {{ store.name }}
+    </title>
+
+    {% if product %}
+      <meta name="description" content="{{ product.description | strip_html | escape | strip_newlines }}"/>
+      <meta property="og:title" content="{{ product.name }}"/>
+      <meta property="og:description" content="{{ product.description | strip_html | escape | strip_newlines }}"/>
+      <meta property="og:type" content="product"/>
+      <meta property="og:url" content="{{ store.url }}{{ product.url }}"/>
+      <meta property="og:image" content="{% if product.images.size > 0 %}{{ product.images.first.v600_url }}{% endif %}"/>
+      <meta property="og:site_name" content="{{ store.name }}"/>
+      <meta property="fb:admins" content="763253266"/>
+    {% elsif news and item %}
+      <meta name="description" content="{{ item.body | strip_html | escape | strip_newlines }}"/>
+      <meta property="og:title" content="{{ item.title | escape }}"/>
+      <meta property="og:description" content="{{ item.body | strip_html | escape | strip_newlines }}"/>
+      <meta property="og:type" content="article"/>
+      <meta property="og:url" content="{{ store.url }}{{ item.url }}"/>
+      <meta property="og:site_name" content="{{ store.name }}"/>
+      <meta property="fb:admins" content="763253266"/>
+    {% else %}
+      <meta name="description" content="{% if config['site_description'] %}{{ config['site_description'] }}{% endif %}"/>
+      <meta property="og:title" content="{{ store.name }}"/>
+      <meta property="og:description" content="{% if config['site_description'] %}{{ config['site_description'] }}{% endif %}"/>
+      <meta property="og:type" content="website"/>
+      <meta property="og:url" content="{{ store.url }}"/>
+      <meta property="og:image" content="{% if config['featured_image_url'] %}{{ config['featured_image_url'] }}{% endif %}"/>
+      <meta property="og:site_name" content="{{ store.name }}"/>
+      <meta property="fb:admins" content="763253266"/>
+    {% endif %}
+    
+    {% if store.news %}
+      <link rel="alternate" type="application/atom+xml" title="{{ store.name }} - {{ store.news.title }} Feed" href="{{ store.url }}{{ store.news.url }}.xml"/>
+    {% endif %}
+    
+    {{ 'foundation.css' | asset_url | stylesheet_tag: 'screen' }}
+    {{ 'default.css' | asset_url | stylesheet_tag: 'screen' }}
+    <link href="https://fonts.googleapis.com/css?family={{ config['body_font'] | replace:' ','+' }}:300,400,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family={{ config['heading_font'] | replace:' ','+' }}:300,400,600,700,900" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//cdn.jsdelivr.net/jquery.slick/1.5.8/slick.css" rel="stylesheet">
+    
+    {% if current_asset == 'product.html' %}
+      {{ 'glasscase.css' | asset_url | stylesheet_tag: 'screen' }}
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    {% endif %}
+    
+    {% if current_asset == 'gallery.html' %}
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.21/css/lightgallery.min.css" rel="stylesheet">
+    {% endif %}
+    
+    {{ config['favicon_image_url'] | favicon_tag }}
+    
+    {% if config['google_analytics_id'] %}
+      <script type="text/javascript">
+        try {
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', '{{ config['google_analytics_id'] }}']);
+          _gaq.push(['_setDomainName', window.location.host]);
+          _gaq.push(['_trackPageview']);
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+        } catch(e){}
+      </script>
+    {% endif %}
+  </head>
+  <body class="{{ current_asset | remove: '.html' }}">
+    <header>
+      {% if config['show_top_bar'] %}
+        <div class="top-bar show-for-large">
+          <div class="column row">
+            {% include 'social-icons.html' %}
+          </div>
+        </div>
+      {% endif %}
+      
+      <div class="main-nav">
+        <div class="row column">
+          {% if config['logo_image_url'] %}
+            <a class="logo" href="{{ store.url }}"><img src="{{ config['logo_image_url'] }}"></a>
+          {% else %}
+            <a class="logo" href="{{ store.url }}"><h1>{{ store.name }}</h1></a>
+          {% endif %}
+          
+          <nav class="right">
+            <ul>
+              <li>
+                <a class="search-trigger"><i class="fa fa-search" aria-hidden="true"></i></a>
+              </li>
+              <li>
+                <a class="cart-trigger" onclick="javascript:Store.cart.show();">
+                  <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                  <div class="cart-count badge">&mdash;</div>
+                </a>
+              </li>
+              <li class="hide-for-large">
+                <a class="nav-trigger"><span></span></a>
+              </li>
+            </ul>
+          </nav>
+          
+          <nav class="desktop-nav right show-for-large">
+            <ul>
+              <li>
+                <a href="/store">Store</a>
+                <ul class="dropdown{% if store.categories.size > 12 %} columns{% endif %}">
+                  {% for category in store.categories %}
+                    {% if category.products.size > 0 %}
+                      <li><a href="{{ category.url }}">{{ category.name }} <span class="right">{{ category.product_count }}</span></a></li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </li>
+              
+              {% if store.pages.size > 0 %}
+                {% for page in store.pages %}
+                  <li>
+                    {{ page | link_to_page }}
+                    
+                    {% if store.roster and store.roster.url == page.url and config['show_artists_in_dropdown'] %}
+                      {% if store.roster.items.size > 0 %}
+                        <ul class="dropdown{% if store.roster.items.size > 12 %} columns{% endif %}">
+                          {% for item in store.roster.items %}
+                            <li>{{ item | link_to_roster_item }}</li>
+                          {% endfor %}
+                        </ul>
+                      {% endif %}
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </div>
+      
+      <nav class="mobile-nav">
+        <div class="row">
+          {% if store.pages.size > 0 %}
+            <div class="small-6 columns">
+              <ul>
+                <li><a href="{{ store.url }}"><strong>Home</strong></a></li>
+                {% for page in store.pages %}
+                  <li>{{ page | link_to_page }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          
+          <div class="small-{% if store.pages.size > 0 %}6{% else %}12{% endif %} columns">
+            <ul>
+              <li><a href="/store"><strong>Store <span class="right"></strong></a></li>
+              {% for category in store.categories %}
+                {% if category.products.size > 0 %}
+                  <li><a href="{{ category.url }}">{{ category.name }}</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        
+        {% if config['show_top_bar'] %}
+          {% include 'social-icons.html' %}
+        {% endif %}
+      </nav>
+    </header>
+    
+    <div class="content">
+      <div class="row column">
+        {{ content }}
+      </div>
+    </div>
+    
+    <footer>
+      <div class="footer-content">
+        {% if config['show_newsletter_subscribe'] %}
+          <form class="newsletter-subscribe-form" action="//newsletters.limitedrun.com/subscribe?store={{ store.subdomain }}" method="post" target="_blank">
+            <div class="row column">
+              <input type="email" name="email" value="" placeholder="Email Address" required/>
+              <input type="text" name="name" value="" placeholder="First &amp; Last Name"/>
+              <button type="submit">Subscribe to Mailing List</button>
+            </div>
+          </form>
+        {% endif %}
+
+        {% if config['show_social_icons'] %}
+          <div class="row column">
+            {% include 'social-icons.html' %}
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="footer-copyright">
+        &copy; {{ 'now' | date: "%Y" }} {{ store.name }}. {{ powered_by_link }}.
+      </div>
+    </footer>
+    
+    <div id="search">
+      <button type="button" class="close">&times;</button>
+      <form action="/products/search" method="get">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search..."/>
+      </form>
+    </div>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.8/slick.min.js"></script>
+    {% if current_asset == 'product.html' %}
+      {{ 'glasscase.js' | asset_url | script_tag }}
+    {% endif %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.21/js/lightgallery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.21/js/lg-thumbnail.min.js"></script>
+    {{ 'default.js' | asset_url | script_tag }}
+
+    <!-- The following store.js script is required for every page. Do not remove it. -->
+    {{ store_script_tag }}
+    <!-- /store.js -->
+  </body>
+</html>

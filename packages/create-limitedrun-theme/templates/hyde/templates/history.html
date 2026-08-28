@@ -1,0 +1,25 @@
+{% paginate history.items by 12 %}
+  <h2>{{ page.title }}</h2>
+  
+  {% for item in history.items %}
+    <div class="row list">
+      <div class="small-12 medium-4 columns">
+        {{ item.images.first.v600_url | img_tag }}
+      </div>
+      
+      <div class="small-12 medium-8 columns">
+        <h3>{{ item.name }}<small>{{ item.release_information | join: ' &middot; ' }}</small></h3>
+        
+        {{ item.description | simple_format }}
+          
+        <ul>
+          {% for link in item.links %}
+            <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endfor %}
+    
+  {{ history.items_pagination }}
+{% endpaginate %}

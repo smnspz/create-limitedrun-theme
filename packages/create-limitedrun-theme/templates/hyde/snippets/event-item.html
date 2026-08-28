@@ -1,0 +1,41 @@
+<div class="column grid-item">
+  <figure>
+    <a href="{{ event.url }}">
+      {% unless config['grid_items_hover_effect'] == 'alternative-image' %}
+        <img src="{{ event.images.first.v600_url }}">
+        
+        {% if config['grid_items_hover_effect'] == 'light-overlay' or config['grid_items_hover_effect'] == 'dark-overlay' %}
+          <figcaption class="overlay">
+            <div>{{ config['grid_item_overlay_text'] }}</div>
+          </figcaption>
+        {% endif %}
+      {% endunless %}
+      
+      {% if config['grid_items_hover_effect'] == 'alternative-image' %}
+        {% if event.images.size == 1 %}
+          <div style="background-image:url('{{ event.images.first.v600_url }}');">
+            <img src="https://s9.limitedrun.com/images/1193418/product-image-placeholder-600.png">
+          </div>
+        {% elsif event.images.size > 1 %}
+          <div id="event-{{ event.id }}" style="background-image:url('{{ event.images[0].v600_url }}');"
+            onmouseover="document.getElementById('event-{{ event.id }}').style.backgroundImage='url({{ event.images[1].v600_url }})';"
+            onmouseout ="document.getElementById('event-{{ event.id }}').style.backgroundImage='url({{ event.images[0].v600_url }})';">
+            <img src="https://s9.limitedrun.com/images/1193418/product-image-placeholder-600.png">
+          </div>
+        {% else %}
+          <div>
+            <img src="https://s9.limitedrun.com/images/1193418/product-image-placeholder-600.png">
+          </div>
+        {% endif %}
+      {% endif %}
+    </a>
+  </figure>
+  
+  <div class="grid-item-info">
+    <div class="ellipsis">{{ event.name }}</div>
+    <div class="price">
+      {{ event.venue.name }}, {{ event.venue.city }}<br>
+      {{ event.starts_at | date: "%b" }} {{ event.starts_at | date: "%d" | ordinalize }}, {{ event.starts_at | date: "%Y" }}
+    </div>
+  </div>
+</div>

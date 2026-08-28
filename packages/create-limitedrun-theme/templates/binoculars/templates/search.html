@@ -1,0 +1,14 @@
+{% paginate products by 24 %}
+  <h2>Search Results</h2>
+  {% if products.size > 0 %}
+    <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+      {% for product in products %}
+        {% include 'product-item.html' %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <strong>No Results Found</strong>
+  {% endif %}
+  
+  {{ products_pagination }}
+{% endpaginate %}

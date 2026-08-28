@@ -1,0 +1,64 @@
+{% if section == 'store' %}
+  {% paginate item.products by 24 %}
+    <h2>All Products by {{ item.name }}</h2>
+    <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-4">
+      {% for product in item.products %}
+        {% include 'product-item.html' %}
+      {% endfor %}
+    </ul>
+    
+    {{ item.products_pagination }}
+  {% endpaginate %}
+
+{% else %}
+  <h2>{{ item.name }}</h2>
+  {{ item.images.first.url | img_tag }}
+  
+  <div class="row">
+    <div class="medium-9 columns">
+      {% if item.description != '' %}
+        <h3>About</h3>
+        {{ item.description | simple_format }}
+      {% endif %}
+      
+      {% if item.history_items.size > 0 %}
+        <h3>Releases</h3>
+        {% for history_item in item.history_items %}
+          <p><strong>{{ history_item.name }}</strong><br />
+          {{ history_item.release_information | join: ' &middot; ' }}</p>
+        {% endfor %}
+      {% endif %}
+      
+      {% if config['display_bandsintown_widget'] %}
+        <h3>Tour Dates</h3>
+			  <script charset="utf-8" src="https://widget.bandsintown.com/main.min.js"></script>
+			  <a class="bit-widget-initializer" data-artist-name="{{ item.name }}" data-display-local-dates="false" data-display-past-dates="false" data-auto-style="false" data-display-limit="15"></a>
+      {% endif %}
+    </div>
+    
+    <div class="medium-3 columns">
+      {% if item.products.size > 0 %}
+        <h3>Products
+          {% if item.products.size > 4 %}
+            <small><a href="{{ item.url }}/store">(View All)</a></small>
+          {% endif %}
+        </h3>
+        
+        <ul class="large-block-grid-1">
+          {% for product in item.products limit:4 %}
+            {% include 'product-item.html' %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+      
+      {% if item.links.size > 0 %}
+        <h3>Links</h3>
+        <ul>
+          {% for link in item.links %}
+            <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}

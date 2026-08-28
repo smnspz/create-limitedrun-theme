@@ -1,0 +1,13 @@
+<article>
+  <div class="row column">
+    <h2>{{ item.title }}
+      <small>{{ item.published_at | date: "%-d %B %Y" }}</small>
+    </h2>
+  </div>
+  
+  <div class="row">
+    <div class="large-8 columns">
+      {{ item.body }}
+    </div>
+  </div>
+</article>

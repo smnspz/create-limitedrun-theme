@@ -1,0 +1,16 @@
+{% paginate gallery.items by 30 %}
+  <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+    {% for item in gallery.items %}
+      <li>
+        <a href="{{ item.url }}">
+          <div class="image-wrapper">
+            <img src="{{ item.v600_url }}" alt="{{ item.name }}"/>
+            <div class="overlay"><span>View Image</span></div>
+          </div>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+  
+  {{ gallery.items_pagination }}
+{% endpaginate %}

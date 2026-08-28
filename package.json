@@ -14,8 +14,8 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "lint": "prettier --check . && npm run typecheck --workspaces --if-present",
-    "format": "prettier --write .",
+    "lint": "prettier --check \"packages/**/*.{ts,json,md}\" \"*.{md,json}\" \".github/**/*.yml\" && npm run typecheck --workspaces --if-present",
+    "format": "prettier --write \"packages/**/*.{ts,json,md}\" \"*.{md,json}\" \".github/**/*.yml\"",
     "release": "npm run build && changeset publish"
   },
   "devDependencies": {

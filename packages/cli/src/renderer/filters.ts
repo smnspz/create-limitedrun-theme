@@ -33,6 +33,8 @@ function money(input: unknown): string | string[] {
 function ordinalize(input: unknown): string {
   const n = Number.parseInt(String(input), 10);
   if (Number.isNaN(n)) return String(input ?? '');
+
+  // Pick the suffix from the last one or two digits (11-13 are always "th")
   const rem100 = Math.abs(n) % 100;
   const rem10 = rem100 % 10;
   const suffix =
@@ -57,9 +59,12 @@ function ordinalize(input: unknown): string {
  * @returns the formatted HTML
  */
 function simpleFormat(input: unknown): string {
+  // Pass through empty or already-structured text
   const text = String(input ?? '').trim();
   if (text === '') return '';
   if (/<(p|div|ul|ol|h[1-6]|table|section|article)[\s>]/i.test(text)) return text;
+
+  // Split on blank lines into paragraphs, single newlines into <br />
   const paragraphs = text.split(/\n{2,}/).map((p) => p.replace(/\n/g, '<br />\n'));
   return paragraphs.map((p) => `<p>${p}</p>`).join('\n\n');
 }
@@ -73,8 +78,12 @@ function simpleFormat(input: unknown): string {
  */
 function stylesheetUrl(input: unknown): string {
   if (input === null || input === undefined) return '';
+
+  // Pass absolute URLs through untouched
   let s = String(input);
   if (/^https?:/.test(s)) return s;
+
+  // Add the /stylesheets prefix and .css suffix if missing
   if (!s.startsWith('/')) s = `/stylesheets/${s}`;
   if (!s.endsWith('.css')) s = `${s}.css`;
   return s;
@@ -87,6 +96,7 @@ function stylesheetUrl(input: unknown): string {
  * @param javascriptsDir - configured name of the theme's JS directory, used by `script_tag`
  */
 export function registerFilters(liquid: Liquid, javascriptsDir: string): void {
+  // Register the number and text filters
   liquid.registerFilter('money', money);
   liquid.registerFilter('money_with_currency', (input: unknown) => {
     const m = money(input);
@@ -95,7 +105,7 @@ export function registerFilters(liquid: Liquid, javascriptsDir: string): void {
   liquid.registerFilter('ordinalize', ordinalize);
   liquid.registerFilter('simple_format', simpleFormat);
 
-  // Asset helpers.
+  // Register the asset helpers
   liquid.registerFilter('asset_url', (input: unknown) => (input == null ? '' : String(input)));
   liquid.registerFilter('stylesheet_url', stylesheetUrl);
   liquid.registerFilter('stylesheet_tag', (input: unknown, media = 'screen') => {
@@ -115,7 +125,7 @@ export function registerFilters(liquid: Liquid, javascriptsDir: string): void {
     return `<link rel="shortcut icon" href="${input}" type="image/x-icon" />`;
   });
 
-  // Link helpers (ported from the gem).
+  // Register the link helpers
   liquid.registerFilter(
     'link_to_news_item',
     (input: Record<string, unknown>) =>

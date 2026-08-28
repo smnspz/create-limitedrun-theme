@@ -31,6 +31,8 @@ export class ThemeRenderer {
    */
   constructor(themePath: string, options: RendererOptions = {}) {
     this.themePath = themePath;
+
+    // Build a liquidjs instance rooted at templates/ and snippets/
     const snippetsDir = path.join(themePath, THEME_DIRS.snippets);
     this.liquid = new Liquid({
       root: [path.join(themePath, THEME_DIRS.templates), snippetsDir],
@@ -42,6 +44,8 @@ export class ThemeRenderer {
       // be auto-escaped; the gem's Liquid did not escape by default either.
       outputEscape: undefined,
     });
+
+    // Register the custom Limited Run filters and tags
     registerFilters(this.liquid, THEME_DIRS.javascripts);
     registerTags(this.liquid, snippetsDir);
   }
@@ -60,13 +64,17 @@ export class ThemeRenderer {
 
   /**
    * Render a page: the named template wrapped in the default layout.
+   *
    * @param template - template file name, e.g. `index.html`
    * @param assigns - per-route variables merged over the globals
    * @returns the full HTML document
    */
   async renderPage(template: string, assigns: Record<string, unknown> = {}): Promise<string> {
+    // Merge the per-route assigns over the theme globals
     const globals = loadGlobals(this.themePath);
     const scope = { ...globals, ...assigns };
+
+    // Render the template, then wrap it in the layout as `content`
     const content = await this.liquid.parseAndRender(
       this.read(THEME_DIRS.templates, template),
       scope,
@@ -86,6 +94,7 @@ export class ThemeRenderer {
    * @returns the rendered HTML
    */
   async renderBare(template: string, assigns: Record<string, unknown> = {}): Promise<string> {
+    // Render the template directly, no layout
     const globals = loadGlobals(this.themePath);
     return this.liquid.parseAndRender(this.read(THEME_DIRS.templates, template), {
       ...globals,
@@ -101,6 +110,7 @@ export class ThemeRenderer {
    * @returns the compiled CSS
    */
   async renderStylesheet(file: string): Promise<string> {
+    // Render the stylesheet with only `config` in scope
     const { config } = loadGlobals(this.themePath);
     return this.liquid.parseAndRender(this.read(THEME_DIRS.stylesheets, file), { config });
   }

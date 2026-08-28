@@ -27,11 +27,13 @@ function formatErrors(errors: ErrorObject[]): string {
 
 /**
  * Read and validate `store.json` at the theme root.
+ *
  * @param themePath - absolute path to the theme root
  * @returns the parsed store mock data
  * @throws {StoreValidationError} on missing file, invalid JSON, or schema failure
  */
 export function loadStore(themePath: string): Record<string, unknown> {
+  // Read the file, or fail with a clear message
   const file = path.join(themePath, 'store.json');
   let text: string;
   try {
@@ -42,6 +44,7 @@ export function loadStore(themePath: string): Record<string, unknown> {
     );
   }
 
+  // Parse the JSON, or fail with a clear message
   let data: unknown;
   try {
     data = JSON.parse(text);
@@ -49,10 +52,13 @@ export function loadStore(themePath: string): Record<string, unknown> {
     throw new StoreValidationError(`store.json is not valid JSON: ${(err as Error).message}`);
   }
 
+  // Schema-check, or fail with the offending paths
   if (!validate(data)) {
     throw new StoreValidationError(
       `store.json does not match the expected shape:\n${formatErrors(validate.errors ?? [])}`,
     );
   }
+
+  // Return the validated data
   return data as Record<string, unknown>;
 }

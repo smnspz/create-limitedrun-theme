@@ -91,6 +91,7 @@ under Storefront → Themes.
  * @returns the user's choice
  */
 async function confirm(message: string): Promise<boolean> {
+  // Exit the whole process if the user hits Ctrl-C
   const answer = await p.confirm({ message });
   if (p.isCancel(answer)) {
     p.cancel('Cancelled.');
@@ -108,6 +109,7 @@ async function confirm(message: string): Promise<boolean> {
  * @returns a promise that resolves once the theme has been created
  */
 async function main(): Promise<void> {
+  // Parse the flags and positionals
   const { values, positionals } = parseArgs({
     args: process.argv.slice(2),
     allowPositionals: true,
@@ -123,7 +125,7 @@ async function main(): Promise<void> {
 
   p.intro('create-limitedrun-theme');
 
-  // Resolve the target directory.
+  // Resolve the target directory, prompting if none was given
   let dir = positionals[0];
   if (!dir) {
     const answer = await p.text({
@@ -137,17 +139,20 @@ async function main(): Promise<void> {
   const target = path.resolve(dir);
   const name = path.basename(target);
 
+  // Refuse to overwrite an existing directory
   if (existsSync(target)) {
     p.cancel(`${dir} already exists — choose another directory.`);
     process.exit(1);
   }
 
-  // Resolve the starter template.
+  // Resolve the starter template from --template, or reject an unknown id
   let templateId = values.template;
   if (templateId && !TEMPLATES.some((t) => t.id === templateId)) {
     p.cancel(`Unknown template '${templateId}'. Options: ${TEMPLATES.map((t) => t.id).join(', ')}`);
     process.exit(1);
   }
+
+  // Otherwise prompt for it (or default to skeleton under --yes)
   if (!templateId) {
     if (values.yes) {
       templateId = 'skeleton';
@@ -162,7 +167,7 @@ async function main(): Promise<void> {
     }
   }
 
-  // Decide install / git, honouring flags and --yes.
+  // Decide install / git from flags, --yes, or a prompt
   const doInstall = values['no-install']
     ? false
     : values.install || values.yes
@@ -174,18 +179,17 @@ async function main(): Promise<void> {
       ? true
       : await confirm('Initialize a git repository?');
 
+  // Copy the template, then overlay the shared store mock and .gitignore
   const s = p.spinner();
   s.start(`Creating theme from "${templateId}"`);
-
-  // Theme files, then the shared store.json mock + .gitignore overlaid on top.
   await cp(path.join(TEMPLATES_ROOT, templateId), target, { recursive: true });
   await cp(path.join(TEMPLATES_ROOT, '_shared'), target, { recursive: true });
   await rename(path.join(target, '_gitignore'), path.join(target, '.gitignore'));
   await writeFile(path.join(target, 'package.json'), themePackageJson(name, await ownVersion()));
   await writeFile(path.join(target, 'README.md'), THEME_README(name));
-
   s.stop('Theme created');
 
+  // Initialize a git repo if requested
   if (doGit) {
     try {
       execSync('git init -q && git add -A', { cwd: target, stdio: 'ignore' });
@@ -194,6 +198,7 @@ async function main(): Promise<void> {
     }
   }
 
+  // Install dependencies if requested
   if (doInstall) {
     s.start('Installing dependencies');
     try {
@@ -204,6 +209,7 @@ async function main(): Promise<void> {
     }
   }
 
+  // Print the next steps
   p.outro(
     [
       `Done. Next:`,
@@ -215,6 +221,7 @@ async function main(): Promise<void> {
   );
 }
 
+// Run, printing any error and exiting non-zero
 main().catch((err) => {
   p.log.error(err instanceof Error ? err.message : String(err));
   process.exit(1);

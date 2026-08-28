@@ -33,12 +33,17 @@ function buildConfig(
   themePath: string,
   storeConfig: Record<string, unknown> | undefined,
 ): Record<string, unknown> {
+  // Read the settings schema
   const raw = readFileSync(path.join(themePath, THEME_DIRS.configs, 'default.json'), 'utf8');
   const settings = (JSON.parse(raw).settings ?? {}) as Record<string, { default?: unknown }>;
+
+  // Keep every setting that declares a truthy default
   const config: Record<string, unknown> = {};
   for (const [key, def] of Object.entries(settings)) {
     if (def?.default) config[key] = def.default;
   }
+
+  // Overlay the store.json config overrides, then return
   if (storeConfig) Object.assign(config, storeConfig);
   return config;
 }
@@ -52,8 +57,11 @@ function buildConfig(
  * @throws {StoreValidationError} if store.json is missing or invalid
  */
 export function loadGlobals(themePath: string): ThemeGlobals {
+  // Load and validate the store mock
   const store = loadStore(themePath);
   const storeConfig = store.config as Record<string, unknown> | undefined;
+
+  // Return the globals every template sees
   return {
     config: buildConfig(themePath, storeConfig),
     store,

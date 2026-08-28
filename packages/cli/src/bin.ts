@@ -25,6 +25,7 @@ Options:
  *   after the server has started; the process then stays alive on its own)
  */
 async function main(): Promise<void> {
+  // Parse the command and options
   const command = process.argv[2];
   const { values } = parseArgs({
     args: process.argv.slice(3),
@@ -37,13 +38,16 @@ async function main(): Promise<void> {
     allowPositionals: false,
   });
 
+  // Resolve the theme directory (defaults to the cwd)
   const themePath = path.resolve(values.path ?? process.cwd());
 
+  // Run the dev server
   if (command === 'dev') {
     await runDev({ themePath, port: Number(values.port ?? 4567), strict: values.strict });
     return;
   }
 
+  // Build the export zip and print where it landed
   if (command === 'build') {
     const result = await build(themePath, values.out ? path.resolve(values.out) : undefined);
     process.stdout.write(
@@ -52,10 +56,12 @@ async function main(): Promise<void> {
     return;
   }
 
+  // Unknown or missing command: print usage
   process.stdout.write(USAGE);
   process.exit(command ? 1 : 0);
 }
 
+// Run, printing any error and exiting non-zero
 main().catch((err) => {
   process.stderr.write(`\n  ${err instanceof Error ? err.message : String(err)}\n\n`);
   process.exit(1);

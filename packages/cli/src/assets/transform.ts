@@ -51,8 +51,11 @@ export async function applyTransforms(
   file: string,
   ctx: AssetContext,
 ): Promise<TransformedAsset> {
+  // Use the first transform that claims the file
   for (const t of transforms) {
     if (t.match(file)) return t.transform(source, file, ctx);
   }
+
+  // Fall back to a verbatim copy
   return { name: path.basename(file), content: source };
 }

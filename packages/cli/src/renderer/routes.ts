@@ -175,10 +175,13 @@ export function resolveRoute(
   store: Store,
   query: URLSearchParams = new URLSearchParams(),
 ): RouteMatch {
+  // Drop a trailing slash, then take the first matching route
   const clean = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
   for (const route of routes) {
     const m = clean.match(route.pattern);
     if (m) return route.resolve(m, store, query);
   }
+
+  // Fall through to 404
   return { template: '404.html', assigns: {}, status: 404 };
 }

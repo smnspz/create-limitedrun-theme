@@ -37,11 +37,15 @@ function parseBlock(this: BlockTag, endTag: string, remain: TopLevelToken[]): vo
       parser: { parseToken: (t: TopLevelToken, r: TopLevelToken[]) => TopLevelToken };
     }
   ).parser;
+
+  // Parse each token until the closing tag, then stop
   while (remain.length) {
     const token = remain.shift() as TopLevelToken & { name?: string; kind?: number };
     if (token.name === endTag) return;
     this.templates.push(parser.parseToken(token, remain));
   }
+
+  // Reaching here means the closing tag was never found
   throw new Error(`tag {% ${this.token.getText?.() ?? ''} %} not closed`);
 }
 
@@ -58,6 +62,7 @@ function* renderBlock(
   ctx: Context,
   emitter: Emitter,
 ): Generator<unknown, void, unknown> {
+  // Hand the collected templates to liquidjs's own renderer
   const renderer = (
     this.liquid as unknown as {
       renderer: { renderTemplates: (t: unknown, c: Context, e: Emitter) => unknown };
@@ -80,9 +85,12 @@ function parseIncludeArgs(
   args: string,
   ctx: Context,
 ): { file: string; params: Record<string, unknown> } {
+  // Take the leading quoted file name
   const fileMatch = args.match(/^\s*['"]([^'"]+)['"]/);
   if (!fileMatch) throw new Error(`include: expected a quoted file name, got: ${args}`);
   const file = fileMatch[1] as string;
+
+  // Collect the trailing key=value pairs; quoted are literals, bare are context lookups
   const params: Record<string, unknown> = {};
   const rest = args.slice(fileMatch[0].length);
   const pairRe = /([\w-]+)\s*=\s*(?:'([^']*)'|"([^"]*)"|([\w.-]+))/g;
@@ -144,17 +152,22 @@ export function registerTags(liquid: Liquid, snippetsDir: string): void {
     render(ctx: Context, emitter: Emitter) {
       const self = this as unknown as { token: TagToken; liquid: Liquid };
       const { file, params } = parseIncludeArgs(self.token.args, ctx);
-      // Reject path traversal; snippet must resolve inside the snippets dir.
+
+      // Reject any path that resolves outside the snippets directory
       const target = path.resolve(resolvedSnippets, file);
       if (target !== resolvedSnippets && !target.startsWith(resolvedSnippets + path.sep)) {
         throw new Error(`include: '${file}' escapes the snippets directory`);
       }
+
+      // Read the snippet, or report it missing
       let source: string;
       try {
         source = readFileSync(target, 'utf8');
       } catch {
         throw new Error(`include: snippet '${file}' not found`);
       }
+
+      // Render it with the params exposed as `include.*`
       const scope = { ...ctx.getAll(), include: params };
       return (async () => {
         emitter.write(await self.liquid.parseAndRender(source, scope));

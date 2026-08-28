@@ -40,6 +40,7 @@ const LIVERELOAD_SNIPPET = `<script>
  * @returns a full HTML document
  */
 function renderErrorPage(err: unknown): string {
+  // Escape the message and drop it into a minimal page with live reload attached
   const message = err instanceof Error ? err.message : String(err);
   return `<!doctype html><html><head><meta charset="utf-8"><title>Theme error</title></head>
 <body style="font:14px/1.5 ui-monospace,monospace;padding:2rem;color:#b00">
@@ -62,21 +63,25 @@ export function createDevApp(options: DevServerOptions, subscribers: Set<() => v
   const { themePath, strict } = options;
   const app = new Hono();
 
-  // Server-sent events channel the file watcher pushes reloads to.
+  // Stream reload events over SSE, one subscriber per open connection
   app.get('/__livereload', (c) =>
     streamSSE(c, async (stream) => {
       let open = true;
       const notify = () => stream.writeSSE({ data: 'reload' });
+
+      // Register on connect, unregister on disconnect
       subscribers.add(notify);
       stream.onAbort(() => {
         open = false;
         subscribers.delete(notify);
       });
+
+      // Hold the connection open
       while (open) await stream.sleep(30_000);
     }),
   );
 
-  // Stylesheets are rendered through Liquid (theme settings drive CSS values).
+  // Render stylesheets through Liquid (theme settings drive CSS values)
   app.get('/stylesheets/:file', async (c) => {
     const renderer = new ThemeRenderer(themePath, { strict });
     try {
@@ -87,7 +92,7 @@ export function createDevApp(options: DevServerOptions, subscribers: Set<() => v
     }
   });
 
-  // JavaScript is served verbatim.
+  // Serve JavaScript verbatim
   app.get('/javascripts/:file', async (c) => {
     const file = c.req.param('file');
     try {
@@ -100,16 +105,19 @@ export function createDevApp(options: DevServerOptions, subscribers: Set<() => v
     }
   });
 
-  // Everything else routes to a template.
+  // Route everything else to a template
   app.get('/*', async (c) => {
     const renderer = new ThemeRenderer(themePath, { strict });
     try {
+      // Resolve the path against the route table and render it
       const store = loadStore(themePath);
       const url = new URL(c.req.url);
       const match = resolveRoute(url.pathname, store, url.searchParams);
       const html = match.bare
         ? await renderer.renderBare(match.template, match.assigns)
         : await renderer.renderPage(match.template, match.assigns);
+
+      // Inject the live-reload client and respond
       const withReload = html.includes('</body>')
         ? html.replace('</body>', `${LIVERELOAD_SNIPPET}</body>`)
         : html + LIVERELOAD_SNIPPET;
@@ -117,6 +125,7 @@ export function createDevApp(options: DevServerOptions, subscribers: Set<() => v
         'content-type': 'text/html; charset=utf-8',
       });
     } catch (err) {
+      // Show the error in the browser instead of a blank 500
       return c.body(renderErrorPage(err), 500, { 'content-type': 'text/html; charset=utf-8' });
     }
   });
@@ -134,10 +143,11 @@ export function createDevApp(options: DevServerOptions, subscribers: Set<() => v
 export async function runDev(
   options: DevServerOptions & { port: number },
 ): Promise<() => Promise<void>> {
+  // Build the app and the shared reload-subscriber set
   const subscribers = new Set<() => void>();
   const app = createDevApp(options, subscribers);
 
-  // Watch the theme source and broadcast a reload on any change.
+  // Watch the theme and broadcast a reload on any change
   const watcher = chokidar.watch(options.themePath, {
     ignoreInitial: true,
     ignored: (p) => /node_modules|[/\\]dist[/\\]|\.git[/\\]/.test(p),
@@ -146,9 +156,11 @@ export async function runDev(
     for (const notify of subscribers) notify();
   });
 
+  // Start listening
   const server = serve({ fetch: app.fetch, port: options.port });
   process.stdout.write(`\n  limitedrun dev  →  http://localhost:${options.port}\n\n`);
 
+  // Return a function that stops the watcher and the server
   return async () => {
     await watcher.close();
     server.close();

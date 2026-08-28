@@ -68,13 +68,16 @@ readable error instead of a stack trace.
 ## Development
 
 ```sh
+nvm use           # Node 24, per .nvmrc
 npm install
 npm test          # vitest, all packages
 npm run build     # tsup, all packages
 npm run lint      # prettier --check + per-package typecheck
 ```
 
-Node 20+. Versioning and publishing via [Changesets](https://github.com/changesets/changesets).
+Requires Node 22+; development and CI run on the version pinned in
+[`.nvmrc`](./.nvmrc) (Node 24, the active LTS). Versioning and publishing via
+[Changesets](https://github.com/changesets/changesets).
 
 ## License
 

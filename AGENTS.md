@@ -108,7 +108,8 @@ node packages/cli/dist/bin.js dev --path packages/cli/fixtures/skeleton-theme
 node packages/create-limitedrun-theme/dist/bin.js my-theme --yes --no-install --no-git
 ```
 
-Node 20+ (dev machine has 22). ESM-only, TypeScript strict.
+Node 22+ (`.nvmrc` pins dev and CI to Node 24, the active LTS; run `nvm use`).
+ESM-only, TypeScript strict.
 
 ## Conventions
 

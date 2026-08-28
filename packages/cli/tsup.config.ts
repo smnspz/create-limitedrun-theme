@@ -5,7 +5,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: ['src/index.ts', 'src/bin.ts'],
   format: ['esm'],
-  target: 'node20',
+  target: 'node22',
   clean: true,
   dts: { entry: 'src/index.ts' },
 });

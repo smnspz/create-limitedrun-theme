@@ -72,12 +72,7 @@ export async function build(themePath: string, outDir?: string): Promise<BuildRe
 
   const files: Record<string, Uint8Array> = {};
 
-  /**
-   * Write one file into the staging directory and record it for the zip.
-   *
-   * @param rel - path relative to the theme root / staging root
-   * @param content - file bytes
-   */
+  // Write one file into the staging directory and record it for the zip.
   const write = async (rel: string, content: Buffer) => {
     const dest = path.join(stageDir, rel);
     await mkdir(path.dirname(dest), { recursive: true });

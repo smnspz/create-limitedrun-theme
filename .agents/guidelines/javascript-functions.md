@@ -5,12 +5,26 @@ How functions should be written and documented in this repo (`packages/cli`,
 
 ## Every function gets a JSDoc block
 
-Every **named** function or method — `function` declarations, `const fn = () =>`,
-class methods (including `private`), and named object methods that hold real
-logic — carries a JSDoc block directly above it.
+Every **named, module-level** function or method — `function` declarations,
+`const fn = () =>` at module scope, class methods (including `private`), and
+named object methods that hold real logic — carries a JSDoc block directly
+above it.
 
-Not required for: anonymous callbacks passed inline (`.map`, `.filter`, route
-handlers, framework hooks), and test-file `describe`/`it` bodies.
+**Functions defined inside another function** (local closures, helpers scoped to
+one function body) do **not** get a JSDoc block. A single short inline comment
+above them describing what they do is enough:
+
+```ts
+export async function build(themePath: string): Promise<BuildResult> {
+  // Write one file into the staging dir and record it for the zip.
+  const write = async (rel: string, content: Buffer) => {
+    // …
+  };
+}
+```
+
+Not required at all for: anonymous callbacks passed inline (`.map`, `.filter`,
+route handlers, framework hooks), and test-file `describe`/`it` bodies.
 
 ## Shape of the block
 

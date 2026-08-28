@@ -1,19 +1,45 @@
 {
   "name": "Pinna Records",
   "url": "http://localhost:4567",
-  "mailbox": { "title": "Contact" },
+  "mailbox": {
+    "title": "Contact"
+  },
   "config": {},
   "pages": [
-    { "title": "News", "path": "/news" },
-    { "title": "Artists", "path": "/artists" },
-    { "title": "History", "path": "/history" },
-    { "title": "Gallery", "path": "/gallery" },
-    { "title": "Events", "path": "/events" },
-    { "title": "Contact", "path": "/contact" }
+    {
+      "title": "News",
+      "path": "/news"
+    },
+    {
+      "title": "Artists",
+      "path": "/artists"
+    },
+    {
+      "title": "History",
+      "path": "/history"
+    },
+    {
+      "title": "Gallery",
+      "path": "/gallery"
+    },
+    {
+      "title": "Events",
+      "path": "/events"
+    },
+    {
+      "title": "Contact",
+      "path": "/contact"
+    }
   ],
   "categories": [
-    { "name": "All", "url": "/categories/all" },
-    { "name": "Vinyl", "url": "/categories/vinyl" }
+    {
+      "name": "All",
+      "url": "/categories/all"
+    },
+    {
+      "name": "Vinyl",
+      "url": "/categories/vinyl"
+    }
   ],
   "products": [
     {
@@ -32,22 +58,43 @@
         }
       ],
       "variations": [
-        { "id": 11, "available": true, "name": "Full Album", "price": 20.0 },
-        { "id": 12, "available": false, "name": "Deluxe LP", "price": 30.0 }
+        {
+          "id": 11,
+          "name": "Full Album",
+          "price": 20.0,
+          "available?": true
+        },
+        {
+          "id": 12,
+          "name": "Deluxe LP",
+          "price": 30.0,
+          "available?": false
+        }
       ],
-      "available": true,
-      "announced": false,
-      "unavailable": false,
-      "unlisted": false,
-      "eligible_for_availability_notices": true,
-      "price_range": [20.0, 30.0],
+      "price_range": [
+        20.0,
+        30.0
+      ],
       "soundcloud_playlist_id": 49270298,
       "music_pressing_information": "<p>180g black vinyl, limited to 300 copies.</p>",
       "music_track_listings": [
-        { "id3_track_name": "En-tango-ed" },
-        { "id3_track_name": "Tango d'Antan" }
+        {
+          "id3_track_name": "En-tango-ed"
+        },
+        {
+          "id3_track_name": "Tango d'Antan"
+        }
       ],
-      "custom": { "title": "", "banner-text": "", "subtitle": "" }
+      "custom": {
+        "title": "",
+        "banner-text": "",
+        "subtitle": ""
+      },
+      "available?": true,
+      "announced?": false,
+      "unavailable?": false,
+      "unlisted?": false,
+      "eligible_for_availability_notices?": true
     },
     {
       "id": 2,
@@ -63,14 +110,23 @@
           "v600_url": "https://picsum.photos/seed/plants/600"
         }
       ],
-      "variations": [{ "id": 21, "available": false, "name": "2xCD", "price": 18.0 }],
-      "available": true,
-      "announced": false,
-      "unavailable": false,
-      "unlisted": false,
-      "eligible_for_availability_notices": true,
-      "price_range": [18.0],
-      "custom": {}
+      "variations": [
+        {
+          "id": 21,
+          "name": "2xCD",
+          "price": 18.0,
+          "available?": false
+        }
+      ],
+      "price_range": [
+        18.0
+      ],
+      "custom": {},
+      "available?": true,
+      "announced?": false,
+      "unavailable?": false,
+      "unlisted?": false,
+      "eligible_for_availability_notices?": true
     }
   ],
   "roster": {
@@ -90,14 +146,24 @@
           }
         ],
         "links": [
-          { "name": "Website", "url": "http://elianelust.com/" },
-          { "name": "Facebook", "url": "https://www.facebook.com/ElianeLu" }
+          {
+            "name": "Website",
+            "url": "http://elianelust.com/"
+          },
+          {
+            "name": "Facebook",
+            "url": "https://www.facebook.com/ElianeLu"
+          }
         ],
         "history_items": [
           {
             "name": "Early Recital Series",
             "description": "<p>A run of recitals from the 1990s.</p>",
-            "release_information": ["2013", "Pinna Records", "PINNA-0"],
+            "release_information": [
+              "2013",
+              "Pinna Records",
+              "PINNA-0"
+            ],
             "images": [
               {
                 "url": "https://picsum.photos/seed/recital/600",
@@ -105,7 +171,12 @@
                 "v200_url": "https://picsum.photos/seed/recital/200"
               }
             ],
-            "links": [{ "name": "Notes", "url": "http://elianelust.com/notes" }]
+            "links": [
+              {
+                "name": "Notes",
+                "url": "http://elianelust.com/notes"
+              }
+            ]
           }
         ]
       }
@@ -143,13 +214,17 @@
           "v200_url": "https://picsum.photos/seed/event/200"
         }
       ],
-      "variations": [{ "id": 51, "available": true, "name": "General Admission", "price": 15.0 }],
-      "available": true,
-      "announced": false,
-      "unavailable": false,
-      "unlisted": false,
-      "eligible_for_availability_notices": false,
-      "price_range": [15.0],
+      "variations": [
+        {
+          "id": 51,
+          "name": "General Admission",
+          "price": 15.0,
+          "available?": true
+        }
+      ],
+      "price_range": [
+        15.0
+      ],
       "soundcloud_playlist_id": null,
       "venue": {
         "name": "Old First Concerts",
@@ -160,14 +235,25 @@
         "state": "CA",
         "postal_code": "94109",
         "country": "USA"
-      }
+      },
+      "available?": true,
+      "announced?": false,
+      "unavailable?": false,
+      "unlisted?": false,
+      "eligible_for_availability_notices?": false
     }
   ],
   "gallery": {
     "title": "Gallery",
     "items": [
-      { "url": "https://picsum.photos/seed/g1/600", "v200_url": "https://picsum.photos/seed/g1/200" },
-      { "url": "https://picsum.photos/seed/g2/600", "v200_url": "https://picsum.photos/seed/g2/200" }
+      {
+        "url": "https://picsum.photos/seed/g1/600",
+        "v200_url": "https://picsum.photos/seed/g1/200"
+      },
+      {
+        "url": "https://picsum.photos/seed/g2/600",
+        "v200_url": "https://picsum.photos/seed/g2/200"
+      }
     ]
   },
   "history": {
@@ -176,7 +262,11 @@
       {
         "name": "Pinna 0 - Prelude",
         "description": "<p>The label's first release.</p>",
-        "release_information": ["2012", "Pinna Records", "PINNA-0"],
+        "release_information": [
+          "2012",
+          "Pinna Records",
+          "PINNA-0"
+        ],
         "images": [
           {
             "url": "https://picsum.photos/seed/h1/600",
@@ -184,7 +274,12 @@
             "v200_url": "https://picsum.photos/seed/h1/200"
           }
         ],
-        "links": [{ "name": "Bandcamp", "url": "https://pinna.bandcamp.com" }]
+        "links": [
+          {
+            "name": "Bandcamp",
+            "url": "https://pinna.bandcamp.com"
+          }
+        ]
       }
     ]
   },
@@ -193,16 +288,18 @@
       "number": "1001",
       "key": "abc123",
       "paypal_pay_key": "PAY-XYZ",
-      "attempted": true,
       "digital": false,
-      "discount": true,
       "state": "paid",
       "transaction_id": "TXN-98765",
       "subtotal": 20.0,
       "shipping": 5.0,
       "discount_amount": 2.0,
       "total_price": 23.0,
-      "customer": { "first_name": "Ada", "last_name": "Lovelace", "email": "ada@example.com" },
+      "customer": {
+        "first_name": "Ada",
+        "last_name": "Lovelace",
+        "email": "ada@example.com"
+      },
       "shipping_address": {
         "first_name": "Ada",
         "last_name": "Lovelace",
@@ -214,9 +311,16 @@
         "country": "UK"
       },
       "items": [
-        { "name": "Eliane Lust - Entangoed (Full Album)", "unit_price": 20.0, "quantity": 1, "total_price": 20.0 }
+        {
+          "name": "Eliane Lust - Entangoed (Full Album)",
+          "unit_price": 20.0,
+          "quantity": 1,
+          "total_price": 20.0
+        }
       ],
-      "downloads": []
+      "downloads": [],
+      "attempted?": true,
+      "discount?": true
     }
   ],
   "message": {}

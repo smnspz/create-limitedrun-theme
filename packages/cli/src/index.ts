@@ -1,3 +1,5 @@
-// Public library surface. Populated in later phases with the renderer,
-// dev-server factory, and build routine.
-export const version = '0.1.0';
+// Public library surface.
+export { ThemeRenderer, type RendererOptions } from './renderer/engine.js';
+export { resolveRoute, type RouteMatch } from './renderer/routes.js';
+export { loadGlobals, THEME_DIRS, type ThemeGlobals } from './renderer/assigns.js';
+export { loadStore, StoreValidationError } from './store/load.js';

@@ -4,9 +4,16 @@
   "description": "Scaffold a new Limited Run theme project",
   "license": "MIT",
   "type": "module",
-  "bin": { "create-limitedrun-theme": "./dist/bin.js" },
-  "files": ["dist", "templates"],
-  "engines": { "node": ">=20" },
+  "bin": {
+    "create-limitedrun-theme": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsup",
     "test": "vitest run",

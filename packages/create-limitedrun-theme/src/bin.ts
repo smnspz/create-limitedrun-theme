@@ -85,6 +85,78 @@ under Storefront → Themes.
 `;
 
 /**
+ * Build the AGENTS.md contents for a generated theme project — orientation for
+ * an AI agent editing or running the theme.
+ *
+ * @param name - the theme/project name
+ * @returns the Markdown document
+ */
+const THEME_AGENTS = (name: string) => `# ${name} — agent guide
+
+This is a [Limited Run](https://limitedrun.com/) storefront theme: Liquid
+templates plus CSS and JavaScript. It is built and previewed locally with
+\`@limitedrun/cli\`; there is no theme API, so deploying means uploading a zip
+by hand in the Limited Run admin.
+
+## Commands
+
+\`\`\`sh
+npm run dev      # preview server on http://localhost:4567, live-reloads on save
+npm run build    # writes dist/${name}.zip in the platform's export layout
+\`\`\`
+
+Run \`npm install\` first if \`node_modules/\` is missing.
+
+## Layout — do not rename these directories
+
+\`\`\`
+configs/default.json   theme settings schema (name, description, settings.*)
+layouts/default.html   the wrapper; page templates render into {{ content }}
+templates/*.html       one file per page type (see routes below)
+snippets/*             partials pulled in with {% include 'file.html' %}
+stylesheets/*.css      run through Liquid on serve/build (see below)
+javascripts/*.js       served verbatim
+store.json             LOCAL MOCK DATA — never shipped, edit freely
+store.schema.json      JSON Schema for store.json (validated on dev + build)
+\`\`\`
+
+## Routes → templates (what \`npm run dev\` serves)
+
+\`/\` index · \`/store\` \`/categories/:slug\` category · \`/products/:slug\` product ·
+\`/artists\` roster · \`/artists/:slug\` roster-item · \`/news\` \`/news/posts/:slug\`
+news · \`/events\` \`/events/:slug\` event · \`/gallery\` · \`/history\` · \`/contact\` ·
+\`/search?q=\` · \`/orders/:id\` order · \`/maintenance\` · anything else → 404.
+
+## Editing rules
+
+- Keep \`layouts/default.html\` as the single wrapper; every non-standalone
+  template is injected as \`{{ content }}\`.
+- \`store.json\` must stay valid against \`store.schema.json\` — \`npm run dev\`
+  fails loudly with the offending paths otherwise. Add fields freely, but
+  match the shapes real templates read (\`product.price_range\`,
+  \`store.roster.items\`, …).
+- Stylesheets are Liquid-processed with only \`config\` in scope. Use
+  \`{% assign x = config['some_setting'] %}\` and \`{{ x }}\`; add matching keys
+  under \`settings\` in \`configs/default.json\` so they appear in the admin.
+- Custom Liquid available in templates: filters \`money\`, \`money_with_currency\`,
+  \`simple_format\`, \`ordinalize\`, \`stylesheet_tag\`, \`script_tag\`, \`img_tag\`,
+  \`favicon_tag\`, \`asset_url\`, \`link_to_page\` / \`link_to_category\` /
+  \`link_to_news_item\` / \`link_to_roster_item\` / \`link_to_download\`; tags
+  \`{% include %}\`, \`{% paginate … %}\`, \`{% contact_form %}\`, \`{% captcha %}\`.
+- After any change, run \`npm run build\` — it re-validates and produces the
+  uploadable zip. Fix anything it reports before handing back.
+
+## Deploy
+
+\`npm run build\`, then upload \`dist/${name}.zip\` in the Limited Run admin under
+Storefront → Themes. \`store.json\` and \`store.schema.json\` are excluded from the
+zip automatically.
+`;
+
+/** CLAUDE.md contents for a generated theme project. */
+const THEME_CLAUDE = 'See [AGENTS.md](./AGENTS.md) for how to edit and run this theme.\n';
+
+/**
  * Ask a yes/no question, exiting the process if the user cancels the prompt.
  *
  * @param message - the question to display
@@ -103,8 +175,8 @@ async function confirm(message: string): Promise<boolean> {
 /**
  * Run the scaffolder: resolve the target directory and starter template
  * (from flags/positionals or interactive prompts), copy the template plus the
- * shared store mock, write `package.json` / `README.md`, and optionally run
- * `npm install` and `git init`.
+ * shared store mock, write `package.json` / `README.md` / `AGENTS.md` /
+ * `CLAUDE.md`, and optionally run `npm install` and `git init`.
  *
  * @returns a promise that resolves once the theme has been created
  */
@@ -187,6 +259,8 @@ async function main(): Promise<void> {
   await rename(path.join(target, '_gitignore'), path.join(target, '.gitignore'));
   await writeFile(path.join(target, 'package.json'), themePackageJson(name, await ownVersion()));
   await writeFile(path.join(target, 'README.md'), THEME_README(name));
+  await writeFile(path.join(target, 'AGENTS.md'), THEME_AGENTS(name));
+  await writeFile(path.join(target, 'CLAUDE.md'), THEME_CLAUDE);
   s.stop('Theme created');
 
   // Initialize a git repo if requested

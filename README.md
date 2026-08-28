@@ -20,7 +20,8 @@ npm run dev      # preview at http://localhost:4567
 The scaffolder prompts for a starter theme (or pass `--template <id>`):
 `skeleton` (default), `telescope`, `hyde`, `binoculars`, `winter`, `winter-peak`
 — ported from Limited Run's own themes. Every starter ships the same
-`store.json` mock and a `.gitignore`.
+`store.json` mock, a `.gitignore`, and an `AGENTS.md` / `CLAUDE.md` that orient
+an AI agent on editing and running the theme.
 
 ## Packages
 

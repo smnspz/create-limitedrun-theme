@@ -29,6 +29,9 @@ describe('create-limitedrun-theme', () => {
     expect(existsSync(path.join(dir, '_gitignore'))).toBe(false);
     expect(existsSync(path.join(dir, 'store.json'))).toBe(true);
     expect(existsSync(path.join(dir, 'store.schema.json'))).toBe(true);
+    expect(existsSync(path.join(dir, 'AGENTS.md'))).toBe(true);
+    expect(existsSync(path.join(dir, 'CLAUDE.md'))).toBe(true);
+    expect(readFileSync(path.join(dir, 'AGENTS.md'), 'utf8')).toContain('npm run dev');
 
     const pkg = JSON.parse(readFileSync(path.join(dir, 'package.json'), 'utf8'));
     expect(pkg.name).toBe('my-theme');

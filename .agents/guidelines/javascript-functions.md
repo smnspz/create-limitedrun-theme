@@ -11,16 +11,17 @@ named object methods that hold real logic — carries a JSDoc block directly
 above it.
 
 **Functions defined inside another function** (local closures, helpers scoped to
-one function body) do **not** get a JSDoc block. A single short inline comment
-above them describing what they do is enough:
+one function body) do **not** get a JSDoc block. One short inline comment above
+them, in the same style as any other block comment, is enough:
 
 ```ts
-export async function build(themePath: string): Promise<BuildResult> {
-  // Write one file into the staging dir and record it for the zip.
-  const write = async (rel: string, content: Buffer) => {
-    // …
-  };
-}
+// Write one file and record it for the zip
+const write = async (rel: string, content: Buffer) => {
+  const dest = path.join(stageDir, rel);
+  await mkdir(path.dirname(dest), { recursive: true });
+  await writeFile(dest, content);
+  files[rel.split(path.sep).join('/')] = content;
+};
 ```
 
 Not required at all for: anonymous callbacks passed inline (`.map`, `.filter`,
@@ -89,40 +90,80 @@ what the function does**, step by step. But comment in **blocks**, not per line.
 
 No numbered lists, no divider bars, no top-of-file banner.
 
-### Example — block comments, blank lines between blocks
+### The canonical reference
+
+`packages/cli/src/commands/build.ts` is the model. Every inline comment in this
+repo should read like the ones in that file:
 
 ```ts
-// Validate the theme before emitting anything
-try {
-  JSON.parse(await readFile(configPath, 'utf8'));
-} catch (err) {
-  throw new Error(`configs/default.json is missing or invalid: ${err.message}`);
+export async function build(themePath: string, outDir?: string): Promise<BuildResult> {
+  // Validate the theme before emitting anything
+  try {
+    JSON.parse(await readFile(path.join(themePath, THEME_DIRS.configs, 'default.json'), 'utf8'));
+  } catch (err) {
+    throw new Error(`configs/default.json is missing or invalid: ${(err as Error).message}`);
+  }
+  loadStore(themePath);
+
+  // Prepare a clean staging directory
+  const name = path.basename(themePath);
+  const dist = outDir ?? path.join(themePath, 'dist');
+  const stageDir = path.join(dist, name);
+  await rm(stageDir, { recursive: true, force: true });
+  await mkdir(stageDir, { recursive: true });
+
+  // Collect every emitted file for the zip
+  const files: Record<string, Uint8Array> = {};
+
+  // Write one file and record it for the zip
+  const write = async (rel: string, content: Buffer) => {
+    const dest = path.join(stageDir, rel);
+    await mkdir(path.dirname(dest), { recursive: true });
+    await writeFile(dest, content);
+    files[rel.split(path.sep).join('/')] = content;
+  };
+
+  // Copy the verbatim directories
+  for (const dir of COPY_DIRS) {
+    for (const rel of await collectDir(themePath, dir)) {
+      await write(rel, await readFile(path.join(themePath, rel)));
+    }
+  }
+
+  // Transform and copy the asset directories
+  for (const dir of ASSET_DIRS) {
+    for (const rel of await collectDir(themePath, dir)) {
+      const source = await readFile(path.join(themePath, rel));
+      const out = await applyTransforms(source, rel, { themePath, dir });
+      await write(path.join(dir, out.name), out.content);
+    }
+  }
+
+  // Include the theme README if it ships one
+  const readme = path.join(themePath, 'README.md');
+  if (existsSync(readme)) await write('README.md', await readFile(readme));
+
+  // Write the zip archive
+  const zipPath = path.join(dist, `${name}.zip`);
+  await writeFile(zipPath, Buffer.from(zipSync(files, { level: 6 })));
+
+  // Return the build result
+  return { outDir: stageDir, zipPath, fileCount: Object.keys(files).length };
 }
-loadStore(themePath);
-
-// Prepare a clean staging directory
-const name = path.basename(themePath);
-const dist = outDir ?? path.join(themePath, 'dist');
-const stageDir = path.join(dist, name);
-await rm(stageDir, { recursive: true, force: true });
-await mkdir(stageDir, { recursive: true });
-
-// Return the build result
-return { outDir: stageDir, zipPath, fileCount: Object.keys(files).length };
 ```
 
-### Bad — one comment per line, no separation
+### Bad — one comment per line, no blank lines, trailing detail
 
 ```ts
 // Set the theme name from the folder name
 const name = path.basename(themePath);
-// Set the output directory
+// Set the output directory (outDir or themePath/dist)
 const dist = outDir ?? path.join(themePath, 'dist');
 // Set the staging directory
 const stageDir = path.join(dist, name);
 ```
 
-## Example
+## Full example — JSDoc + inline comments
 
 ```ts
 /**
@@ -133,6 +174,27 @@ const stageDir = path.join(dist, name);
  * @throws {StoreValidationError} on missing file, invalid JSON, or schema failure
  */
 export function loadStore(themePath: string): Record<string, unknown> {
-  // …
+  // Read the file, or fail with a clear message
+  const file = path.join(themePath, 'store.json');
+  let text: string;
+  try {
+    text = readFileSync(file, 'utf8');
+  } catch {
+    throw new StoreValidationError(`store.json not found at ${file}`);
+  }
+
+  // Parse and schema-check, or fail with a clear message
+  let data: unknown;
+  try {
+    data = JSON.parse(text);
+  } catch (err) {
+    throw new StoreValidationError(`store.json is not valid JSON: ${(err as Error).message}`);
+  }
+  if (!validate(data)) {
+    throw new StoreValidationError(`store.json does not match the expected shape`);
+  }
+
+  // Return the validated data
+  return data as Record<string, unknown>;
 }
 ```

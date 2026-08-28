@@ -34,13 +34,12 @@ export interface BuildResult {
  * @returns file paths relative to `root`, using the platform separator
  */
 async function collectDir(root: string, dir: string): Promise<string[]> {
-  // Build the absolute directory path
+  // Bail out if the directory does not exist
   const abs = path.join(root, dir);
-  // Return nothing when the directory is absent
   if (!existsSync(abs)) return [];
-  // Read the directory tree recursively
+
+  // Return every file, as a path relative to the root
   const entries = await readdir(abs, { recursive: true, withFileTypes: true });
-  // Return each file as a path relative to the root
   return entries
     .filter((e) => e.isFile())
     .map((e) => path.relative(root, path.join(e.parentPath, e.name)));
@@ -59,40 +58,29 @@ async function collectDir(root: string, dir: string): Promise<string[]> {
  * @returns paths and file count of the produced export
  */
 export async function build(themePath: string, outDir?: string): Promise<BuildResult> {
-  // Get the theme config path
-  const configPath = path.join(themePath, THEME_DIRS.configs, 'default.json');
-  // Fail early if the theme config is missing or not JSON
+  // Validate the theme before emitting anything: config must parse, store.json must be valid
   try {
-    JSON.parse(await readFile(configPath, 'utf8'));
+    JSON.parse(await readFile(path.join(themePath, THEME_DIRS.configs, 'default.json'), 'utf8'));
   } catch (err) {
     throw new Error(`configs/default.json is missing or invalid: ${(err as Error).message}`);
   }
-  // Fail early if store.json is missing or invalid
   loadStore(themePath);
 
-  // Set the theme name from the folder name
+  // Prepare a clean staging directory: <outDir|themePath/dist>/<name>
   const name = path.basename(themePath);
-  // Set the output directory
   const dist = outDir ?? path.join(themePath, 'dist');
-  // Set the staging directory for the unpacked export
   const stageDir = path.join(dist, name);
-  // Clear any previous staging directory
   await rm(stageDir, { recursive: true, force: true });
-  // Create a fresh staging directory
   await mkdir(stageDir, { recursive: true });
 
-  // Track every emitted file for the zip, keyed by forward-slash path
+  // Collect every emitted file for the zip, keyed by forward-slash path
   const files: Record<string, Uint8Array> = {};
 
-  // Write one file into the staging directory and record it for the zip
+  // Write one file to the staging directory and record it for the zip
   const write = async (rel: string, content: Buffer) => {
-    // Build the destination path
     const dest = path.join(stageDir, rel);
-    // Create the parent directory
     await mkdir(path.dirname(dest), { recursive: true });
-    // Write the file to disk
     await writeFile(dest, content);
-    // Record the file for the zip
     files[rel.split(path.sep).join('/')] = content;
   };
 
@@ -103,26 +91,21 @@ export async function build(themePath: string, outDir?: string): Promise<BuildRe
     }
   }
 
-  // Process the asset directories (stylesheets, javascripts) through the transform registry
+  // Copy the asset directories (stylesheets, javascripts), each file through the transform registry
   for (const dir of ASSET_DIRS) {
     for (const rel of await collectDir(themePath, dir)) {
-      // Read the source asset
       const source = await readFile(path.join(themePath, rel));
-      // Run it through the first matching transform
       const out = await applyTransforms(source, rel, { themePath, dir });
-      // Write the transformed asset under its emitted name
       await write(path.join(dir, out.name), out.content);
     }
   }
 
-  // Get the theme README path
+  // Include the theme README in the export if it ships one
   const readme = path.join(themePath, 'README.md');
-  // Include the README in the export if the theme ships one
   if (existsSync(readme)) await write('README.md', await readFile(readme));
 
-  // Build the zip path
+  // Write the uploadable zip archive
   const zipPath = path.join(dist, `${name}.zip`);
-  // Write the zip archive
   await writeFile(zipPath, Buffer.from(zipSync(files, { level: 6 })));
 
   // Return the build result

@@ -65,34 +65,55 @@ than none.
 
 ## Inline comments
 
-Comment function bodies **extensively**. Scanning the comments alone should tell
-the reader what the function does, step by step — even when each line is obvious.
+Comment function bodies so that **scanning the comments alone tells the reader
+what the function does**, step by step. But comment in **blocks**, not per line.
 
-- One short comment per meaningful line or small group of lines.
-- **Start with a verb** describing what the code below does:
-  `// Get the config path`, `// Return the build result`,
-  `// Fail early if store.json is invalid`.
-- Keep them **very short** — a few words. No full sentences, no trailing period
-  needed.
-- Comment obtaining lines (`// Get …`), assignments (`// Set …`), loops
-  (`// Copy the verbatim directories`), guards (`// Return nothing when …`), and
-  every `return` (`// Return the …`).
-- Group a block of variable initialisations under one `// Initializations`
-  comment when they have nothing more specific to say individually.
+- A function body is a sequence of small **blocks**. Put **one short comment**
+  above each block describing what that block does. Blocks are separated by a
+  **blank line**, and the comment sits directly on top of its block (blank line
+  above the comment, none between the comment and its code).
+- A block is usually 1–5 related lines. When each line is individually obvious
+  (a run of `const x = …` setup lines, a guard, a simple loop), one lead comment
+  for the whole block is enough — do **not** comment each line.
+- Only drop to **line-by-line** comments inside a block when the logic is
+  genuinely intricate (a parser, a money/security path, a non-obvious algorithm).
+- **Start every comment with a verb**: `// Validate the theme before emitting`,
+  `// Prepare a clean staging directory`, `// Return the build result`.
+- Keep comments **very short** — a few words, no trailing period.
 
 No numbered lists, no divider bars, no top-of-file banner.
 
-### Example
+### Example — block comments, blank lines between blocks
 
 ```ts
-// Get the theme config path
-const configPath = path.join(themePath, THEME_DIRS.configs, 'default.json');
+// Validate the theme before emitting anything
+try {
+  JSON.parse(await readFile(configPath, 'utf8'));
+} catch (err) {
+  throw new Error(`configs/default.json is missing or invalid: ${err.message}`);
+}
+loadStore(themePath);
 
-// Set the output directory
+// Prepare a clean staging directory
+const name = path.basename(themePath);
 const dist = outDir ?? path.join(themePath, 'dist');
+const stageDir = path.join(dist, name);
+await rm(stageDir, { recursive: true, force: true });
+await mkdir(stageDir, { recursive: true });
 
 // Return the build result
 return { outDir: stageDir, zipPath, fileCount: Object.keys(files).length };
+```
+
+### Bad — one comment per line, no separation
+
+```ts
+// Set the theme name from the folder name
+const name = path.basename(themePath);
+// Set the output directory
+const dist = outDir ?? path.join(themePath, 'dist');
+// Set the staging directory
+const stageDir = path.join(dist, name);
 ```
 
 ## Example

@@ -36,5 +36,17 @@
     "@types/node": "^22.10.2",
     "tsup": "^8.3.5",
     "vitest": "^3.0.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smnspz/create-limitedrun-theme.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/smnspz/create-limitedrun-theme#readme",
+  "bugs": {
+    "url": "https://github.com/smnspz/create-limitedrun-theme/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

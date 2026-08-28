@@ -27,5 +27,14 @@
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^3.0.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smnspz/create-limitedrun-theme.git",
+    "directory": "packages/create-limitedrun-theme"
+  },
+  "homepage": "https://github.com/smnspz/create-limitedrun-theme#readme",
+  "bugs": {
+    "url": "https://github.com/smnspz/create-limitedrun-theme/issues"
   }
 }

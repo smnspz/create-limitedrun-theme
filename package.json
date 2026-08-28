@@ -16,11 +16,15 @@
     "test": "npm run test --workspaces --if-present",
     "lint": "prettier --check \"packages/**/*.{ts,json,md}\" \"*.{md,json}\" \".github/**/*.yml\" && npm run typecheck --workspaces --if-present",
     "format": "prettier --write \"packages/**/*.{ts,json,md}\" \"*.{md,json}\" \".github/**/*.yml\"",
-    "release": "npm run build && changeset publish"
+    "release": "npm run build && changeset publish",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.11",
-    "prettier": "^3.4.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.6",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^3.0.5"

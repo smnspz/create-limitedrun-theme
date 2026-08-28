@@ -65,10 +65,35 @@ than none.
 
 ## Inline comments
 
-Follow the global style: short explanatory inline comments, no numbered lists,
-no divider bars, no top-of-file banner. Group variable initialisations under an
-`// Initializations` comment. Comment obtaining lines (`// Get the service`),
-assignments, and `return` statements with what they produce.
+Comment function bodies **extensively**. Scanning the comments alone should tell
+the reader what the function does, step by step — even when each line is obvious.
+
+- One short comment per meaningful line or small group of lines.
+- **Start with a verb** describing what the code below does:
+  `// Get the config path`, `// Return the build result`,
+  `// Fail early if store.json is invalid`.
+- Keep them **very short** — a few words. No full sentences, no trailing period
+  needed.
+- Comment obtaining lines (`// Get …`), assignments (`// Set …`), loops
+  (`// Copy the verbatim directories`), guards (`// Return nothing when …`), and
+  every `return` (`// Return the …`).
+- Group a block of variable initialisations under one `// Initializations`
+  comment when they have nothing more specific to say individually.
+
+No numbered lists, no divider bars, no top-of-file banner.
+
+### Example
+
+```ts
+// Get the theme config path
+const configPath = path.join(themePath, THEME_DIRS.configs, 'default.json');
+
+// Set the output directory
+const dist = outDir ?? path.join(themePath, 'dist');
+
+// Return the build result
+return { outDir: stageDir, zipPath, fileCount: Object.keys(files).length };
+```
 
 ## Example
 

@@ -1,9 +1,11 @@
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { serve } from '@hono/node-server';
 import chokidar from 'chokidar';
 import { Hono } from 'hono';
 import { streamSSE } from 'hono/streaming';
+import { applyTransforms } from '../assets/transform.js';
 import { THEME_DIRS } from '../renderer/assigns.js';
 import { ThemeRenderer } from '../renderer/engine.js';
 import { resolveRoute } from '../renderer/routes.js';
@@ -49,6 +51,38 @@ ${LIVERELOAD_SNIPPET}</body></html>`;
 }
 
 /**
+ * Locate the source file behind a requested asset and, when it needs
+ * compiling (`.scss` → `.css`, `.ts` → `.js`), run it through the transform
+ * registry. Used by the dev server so a preview serves exactly what
+ * `limitedrun build` would emit.
+ *
+ * @param themePath - absolute path to the theme root
+ * @param dir - asset directory (`stylesheets` or `javascripts`)
+ * @param file - the requested output file name, e.g. `theme.css`
+ * @param sourceExt - the preprocessor extension to look for, e.g. `.scss`
+ * @returns the compiled text, or `null` when no such source exists
+ */
+async function compileAssetSource(
+  themePath: string,
+  dir: string,
+  file: string,
+  sourceExt: string,
+): Promise<string | null> {
+  // Fall back to the source sibling only when no literal file is present
+  if (existsSync(path.join(themePath, dir, file))) return null;
+  const source = file.replace(/\.[^.]+$/, sourceExt);
+  const abs = path.join(themePath, dir, source);
+  if (!existsSync(abs)) return null;
+
+  // Compile through the shared transform registry
+  const out = await applyTransforms(await readFile(abs), path.join(dir, source), {
+    themePath,
+    dir,
+  });
+  return out ? out.content.toString('utf8') : null;
+}
+
+/**
  * Build the Hono app that serves a live preview of the theme: template routes,
  * Liquid-processed stylesheets, verbatim JavaScript, and an SSE endpoint that
  * pushes browser reloads.
@@ -81,22 +115,28 @@ export function createDevApp(options: DevServerOptions, subscribers: Set<() => v
     }),
   );
 
-  // Render stylesheets through Liquid (theme settings drive CSS values)
+  // Serve stylesheets: compile a .scss sibling, else Liquid-process the .css
+  // (theme settings drive CSS values)
   app.get('/stylesheets/:file', async (c) => {
-    const renderer = new ThemeRenderer(themePath, { strict });
+    const file = c.req.param('file');
     try {
-      const css = await renderer.renderStylesheet(c.req.param('file'));
+      const compiled = await compileAssetSource(themePath, THEME_DIRS.stylesheets, file, '.scss');
+      if (compiled) return c.body(compiled, 200, { 'content-type': MIME['.css'] as string });
+
+      const renderer = new ThemeRenderer(themePath, { strict });
+      const css = await renderer.renderStylesheet(file);
       return c.body(css, 200, { 'content-type': MIME['.css'] as string });
     } catch (err) {
       return c.text(err instanceof Error ? err.message : String(err), 500);
     }
   });
 
-  // Serve JavaScript verbatim
+  // Serve JavaScript: transpile a .ts sibling, else serve the .js verbatim
   app.get('/javascripts/:file', async (c) => {
     const file = c.req.param('file');
     try {
-      const body = await readFile(path.join(themePath, THEME_DIRS.javascripts, file));
+      const compiled = await compileAssetSource(themePath, THEME_DIRS.javascripts, file, '.ts');
+      const body = compiled ?? (await readFile(path.join(themePath, THEME_DIRS.javascripts, file)));
       return c.body(body, 200, {
         'content-type': MIME[path.extname(file)] ?? 'application/octet-stream',
       });

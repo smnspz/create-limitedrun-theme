@@ -78,6 +78,14 @@ npm run build    # produce dist/${name}.zip
 Edit \`store.json\` to change the mock data the preview renders against.
 \`store.json\` is a local mock only — it is never uploaded to Limited Run.
 
+## SCSS / TypeScript (optional)
+
+Rename a stylesheet to \`.scss\` or a script to \`.ts\` and it is compiled to
+plain \`.css\`/\`.js\` on \`dev\` and \`build\` automatically — no config, no extra
+install. Sass partials are \`_name.scss\`; \`.ts\` is type-stripped only (no
+bundling). Keep \`{{ config[...] }}\` out of \`.scss\` — use a plain \`.css\` file
+with CSS custom properties for merchant-configurable values.
+
 ## Deploy
 
 \`npm run build\`, then upload \`dist/${name}.zip\` in the Limited Run admin
@@ -113,7 +121,9 @@ Run "npm install" first if node_modules/ is missing.
     templates/*.html       one file per page type (see the table below)
     snippets/*             partials pulled in with {% include 'file.html' %}
     stylesheets/*.css      run through Liquid on serve/build (see below)
+    stylesheets/*.scss     compiled to .css automatically (optional, see below)
     javascripts/*.js       served verbatim
+    javascripts/*.ts       transpiled to .js automatically (optional, see below)
     store.json             LOCAL MOCK DATA — never shipped, edit freely
     store.schema.json      JSON Schema for store.json (validated on dev + build)
 
@@ -129,6 +139,20 @@ Run "npm install" first if node_modules/ is missing.
   "settings" in configs/default.json so it appears in the admin.
 - After any change, run "npm run build" — it re-validates and produces the
   uploadable zip. Fix anything it reports before handing back.
+
+## SCSS and TypeScript (optional)
+
+Drop a ".scss" file in stylesheets/ or a ".ts" file in javascripts/ and it is
+compiled to plain ".css"/".js" on both "npm run dev" and "npm run build" — the
+zip only ever contains ".css"/".js". No config, no extra install.
+
+- Sass files starting with "_" are partials (not emitted); "@use"/"@import"
+  resolve against the file's directory.
+- ".ts" is type-erased only — one file in, one file out. No bundling, no
+  imports across files.
+- Sass is not Liquid-aware. Keep "{{ config[...] }}" out of ".scss"; put those
+  values in a plain ".css" file (":root { --x: {{ config['x'] }} }") and read
+  them in Sass with "var(--x)".
 
 ## Deploy
 

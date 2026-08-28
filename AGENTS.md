@@ -34,6 +34,11 @@ stylesheets/ javascripts/`. **Never rename or restructure these** — the layout
 - `stylesheets/*.css` are **run through Liquid** (with only `config` in scope) on
   serve and build — themes put `{{ config['color'] }}` in CSS. `javascripts/*`
   are served verbatim.
+- **Optional preprocessors**: `stylesheets/*.scss` compile to `.css` (dart-sass,
+  pure JS) and `javascripts/*.ts` type-strip to `.js` (`typescript` compiler) on
+  both dev and build — the export only holds `.css`/`.js`. Wired in
+  `assets/transform.ts`. Sass is not Liquid-aware — `.scss` is treated as pure
+  Sass; `_*.scss` partials and `.d.ts` are not emitted.
 - `store.json` at a theme root is **local mock data** for the preview — it stands
   in for the `store`/`product`/… objects the platform provides at request time.
   It is authored by hand, validated against `store.schema.json`, and **excluded
@@ -58,7 +63,7 @@ src/
     load.ts              loadStore — read + JSON-parse + ajv schema-check, friendly errors
     store.schema.json    the authoritative draft-07 schema for store.json
   assets/
-    transform.ts         AssetTransform seam — identity pass-through today; SCSS/TS/minify plug in here
+    transform.ts         AssetTransform registry — raw .css/.js pass-through, .scss→.css (sass), .ts→.js (tsc type-strip); minify plugs in here
   fixtures/skeleton-theme/   real "Skeleton" theme + store.json — CLI test fixture ONLY (not shipped)
 test/                    vitest — renderer, preview (3 ported gem specs), tags, filters, build, templates
 ```
@@ -151,13 +156,13 @@ Findings with source URLs / gaps / Recommendation):
 
 ## Where to start for common tasks
 
-| Task                                    | Start at                                                         |
-| --------------------------------------- | ---------------------------------------------------------------- |
-| A route renders wrong                   | `renderer/routes.ts` (assigns) then the template                 |
-| A Liquid filter/tag is missing or wrong | `renderer/filters.ts` / `renderer/tags.ts` + a test              |
-| `dev` server behaviour                  | `commands/dev.ts`                                                |
-| Zip contents / build validation         | `commands/build.ts`                                              |
-| store.json shape / validation errors    | `store/store.schema.json` + `store/load.ts`                      |
-| Add SCSS / TS / minification            | register an `AssetTransform` in `assets/transform.ts`            |
-| New starter theme                       | add `templates/<id>/`, register in `TEMPLATES` in the scaffolder |
-| Change generated project files          | `THEME_*` functions in `create-limitedrun-theme/src/bin.ts`      |
+| Task                                    | Start at                                                                            |
+| --------------------------------------- | ----------------------------------------------------------------------------------- |
+| A route renders wrong                   | `renderer/routes.ts` (assigns) then the template                                    |
+| A Liquid filter/tag is missing or wrong | `renderer/filters.ts` / `renderer/tags.ts` + a test                                 |
+| `dev` server behaviour                  | `commands/dev.ts`                                                                   |
+| Zip contents / build validation         | `commands/build.ts`                                                                 |
+| store.json shape / validation errors    | `store/store.schema.json` + `store/load.ts`                                         |
+| Add minification / another asset lang   | register an `AssetTransform` in `assets/transform.ts` (`.scss`/`.ts` already wired) |
+| New starter theme                       | add `templates/<id>/`, register in `TEMPLATES` in the scaffolder                    |
+| Change generated project files          | `THEME_*` functions in `create-limitedrun-theme/src/bin.ts`                         |

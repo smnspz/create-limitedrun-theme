@@ -39,6 +39,10 @@ Options:
 - Serves the theme with routes matching the platform (see the table below).
 - `stylesheets/*.css` are rendered through Liquid with `config` in scope;
   `javascripts/*` are served verbatim.
+- `stylesheets/*.scss` are compiled with [dart-sass](https://sass-lang.com/) and
+  `javascripts/*.ts` are type-stripped with the TypeScript compiler — on both
+  `dev` and `build`, so the export only ever contains `.css`/`.js`. See
+  "Preprocessors" below.
 - A `chokidar` watcher reloads every connected browser over SSE on any file
   change. Template/`store.json`/config edits show up on the next request.
 - Render errors are shown in the browser (with the reload client attached) rather
@@ -51,7 +55,8 @@ Options:
    `store.schema.json` — fails with the offending paths otherwise.
 2. Copies `configs/ layouts/ templates/ snippets/` verbatim.
 3. Runs `stylesheets/ javascripts/` through the asset-transform registry
-   (identity today) and writes them under their emitted names.
+   (raw `.css`/`.js` pass through; `.scss`→`.css`, `.ts`→`.js`) and writes them
+   under their emitted names.
 4. Includes `README.md` if present.
 5. Writes `dist/<name>/` and `dist/<name>.zip`.
 
@@ -68,10 +73,28 @@ layouts/default.html   wrapper; templates render into {{ content }}
 templates/*.html       page templates
 snippets/*             partials for {% include 'file.html' %}
 stylesheets/*.css      run through Liquid on serve/build
+stylesheets/*.scss     compiled to .css (optional)
 javascripts/*.js       served verbatim
+javascripts/*.ts       transpiled to .js (optional)
 store.json             local mock data (not shipped)
 store.schema.json      schema for store.json
 ```
+
+## Preprocessors
+
+Optional and zero-config. Put a `.scss` file in `stylesheets/` or a `.ts` file
+in `javascripts/`:
+
+- `.scss` → compiled to `<name>.css` with dart-sass. Files named `_*.scss` are
+  partials and are not emitted; `@use`/`@import` resolve against the file's
+  directory.
+- `.ts` → `<name>.js` by type erasure only (TypeScript `transpileModule`). No
+  bundling and no cross-file imports — one file in, one file out. `.d.ts` files
+  are ignored.
+- Both `dev` and `build` compile them; the export only contains `.css`/`.js`.
+- Sass runs before Liquid and is not Liquid-aware. Keep `{{ config[...] }}` out
+  of `.scss` — put merchant-configurable values in a plain `.css` file
+  (`:root { --x: {{ config['x'] }} }`) and reference `var(--x)` from Sass.
 
 ### Routes → templates
 

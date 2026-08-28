@@ -50,7 +50,8 @@ async function collectDir(root: string, dir: string): Promise<string[]> {
  *
  * Checks `configs/default.json` parses and `store.json` is valid, copies the
  * platform directories, runs `stylesheets/` and `javascripts/` through the
- * asset transform registry, and zips the result for manual upload. The mock
+ * asset transform registry (compiling any `.scss`/`.ts` to plain `.css`/`.js`),
+ * and zips the result for manual upload. The mock
  * `store.json` / `store.schema.json` and any Node project files are excluded.
  *
  * @param themePath - absolute path to the theme root
@@ -96,7 +97,9 @@ export async function build(themePath: string, outDir?: string): Promise<BuildRe
     for (const rel of await collectDir(themePath, dir)) {
       const source = await readFile(path.join(themePath, rel));
       const out = await applyTransforms(source, rel, { themePath, dir });
-      await write(path.join(dir, out.name), out.content);
+
+      // Skip source-only inputs (Sass partials, .d.ts) the transform declined
+      if (out) await write(path.join(dir, out.name), out.content);
     }
   }
 

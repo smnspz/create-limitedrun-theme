@@ -1,0 +1,24 @@
+{
+  "name": "create-limitedrun-theme",
+  "version": "0.1.0",
+  "description": "Scaffold a new Limited Run theme project",
+  "license": "MIT",
+  "type": "module",
+  "bin": { "create-limitedrun-theme": "./dist/bin.js" },
+  "files": ["dist", "templates"],
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.5"
+  }
+}

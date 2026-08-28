@@ -1,0 +1,26 @@
+{
+  "name": "create-limitedrun-theme-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Modern toolchain for building Limited Run themes",
+  "license": "MIT",
+  "workspaces": ["packages/*"],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "release": "npm run build && changeset publish"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.27.11",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.5"
+  }
+}

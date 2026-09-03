@@ -160,6 +160,146 @@ zip only ever contains ".css"/".js". No config, no extra install.
 Storefront → Themes. store.json and store.schema.json are excluded from the zip
 automatically.
 
+## Production quirks — read before shipping
+
+The LR production renderer disagrees with the local dev server in specific,
+undocumented ways. When an upload breaks and you can't tell why, check this
+list first — every item was confirmed by bisection while shipping a real store.
+
+### Debugging is blind
+
+When your theme is broken you get one of: a black *"We're sorry, but something
+went wrong"* page (LR's fallback), \`HTTP 200\` with an empty body (0 bytes),
+or LR's default Foundation/Skeleton theme silently rendered instead of yours.
+There is no way to get a stack trace or Liquid parser message from production.
+Bisect by uploading progressively simpler themes until one renders, then add
+one thing back.
+
+### Every upload creates a new theme entry — activate it
+
+Uploading a zip does NOT overwrite the current theme. LR adds a new
+"Imported ..." card in Storefront → Themes and leaves the old one active.
+After every upload: find the newest card and click **"Use This Theme"**, then
+reload. If you skip this step you're staring at your previous upload.
+
+To confirm which upload is live during debugging, embed a visible marker in
+the layout (e.g. a fixed-position \`<p>\` with a build ID). If the marker
+isn't visible, LR is serving something else.
+
+### Zip layout is flat at the archive root
+
+LR's importer expects standard directories at the **root** of the archive,
+NOT wrapped inside a top-level folder:
+
+    ${name}.zip
+    ├── configs/default.json
+    ├── layouts/default.html
+    ├── snippets/*.html
+    ├── stylesheets/default.css
+    ├── javascripts/default.js
+    └── templates/*.html
+
+Do not nest inside a \`${name}/\` folder — LR silently ignores nested zips.
+The @limitedrun/cli \`build\` command already produces the correct flat
+layout; if you re-zip manually, use \`cd dist/${name} && zip -r ../${name}.zip .\`.
+
+### All 16 standard templates must be present
+
+Even if you don't use news, roster, history, gallery, events, contact, or
+search, LR still expects every template file. Deleting any of them causes
+the theme to fail (empty response). Include a minimal stub for each unused
+template. \`maintenance.html\` must be self-contained (own \`<!DOCTYPE>\`).
+
+### \`<meta name="description">\` in the layout crashes the renderer
+
+Confirmed by bisection: adding any \`<meta name="description">\` tag to
+\`layouts/default.html\` — even a plain ASCII string, even outside any
+\`{% if %}\` — makes the storefront return LR's 500 page. Omit the tag.
+Meta tags in general are risky; add them cautiously and test each one.
+
+### A pre-rendered cart overlay in the layout crashes the renderer
+
+Any \`<div class="cart-overlay">...\` block in the layout, with any
+combination of \`.cart-panel\`, \`[data-cart-*]\`, \`role="dialog"\`,
+\`aria-label\`, or \`hidden\` attributes, breaks the storefront. Use LR's
+default drawer instead:
+
+    window.Store?.cart?.add?.(variationId);  // add to cart
+    window.Store?.cart?.show?.();            // open the drawer
+
+If you really need a custom cart UI, inject its DOM at runtime from
+\`default.js\` after \`DOMContentLoaded\`; keep the markup out of Liquid.
+
+### Custom fonts and images go through the LR UI
+
+External \`<link>\` to Google Fonts, bunny.net, jsDelivr etc. work but add a
+runtime dependency you don't control. LR provides a native pipeline:
+Storefront → **HTML / CSS** → edit \`configs/default.json\` → **Upload font**
+or **Upload image**. LR returns a public CDN URL (e.g.
+\`https://f9.limitedrun.com/fonts/1852/berkeley-mono-variable-2.ttf\`) that
+you embed in your CSS via \`@font-face\` or in an \`<img>\` tag.
+
+### Undocumented objects that exist in production
+
+- \`store.subdomain\` — the store's LR subdomain. Used by the native
+  newsletter form: \`newsletters.limitedrun.com/subscribe?store={{ store.subdomain }}\`.
+- \`favicon_tag\` filter — renders a favicon config setting as a \`<link>\`.
+- \`{% contact_form %}\` block — form generator.
+- \`{% captcha %}\` tag — themes: \`red white blackglass clean\`.
+- \`{{ store_script_tag }}\` — required once per page; loads \`store.js\`
+  which provides \`window.Store\`.
+
+### Undocumented objects that do NOT exist
+
+- \`store.mailbox.email\` — only \`.title\` is on \`mailbox\`. Hardcode
+  contact addresses instead of reading a nonexistent field.
+
+### Native newsletter endpoint
+
+Not in the docs but present in the Hyde reference theme. Subscribers land in
+the LR admin mailbox section.
+
+    <form action="//newsletters.limitedrun.com/subscribe?store={{ store.subdomain }}"
+          method="post" target="_blank">
+      <input type="email" name="email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+
+### Verify zip integrity before uploading
+
+Whenever you copy the zip from \`dist/\` to a browser-accessible location,
+confirm byte-identity:
+
+    shasum dist/${name}.zip ~/Downloads/${name}.zip
+    cmp    dist/${name}.zip ~/Downloads/${name}.zip && echo IDENTICAL
+
+\`cp\` preserves bytes, but a broken editor plugin or partial copy can
+silently truncate. One-second check worth doing.
+
+### Bisection playbook
+
+When an upload breaks and you can't tell why:
+
+1. Replace \`layouts/default.html\` with a hardcoded minimum:
+
+       <!DOCTYPE html><html><head><title>t</title>
+       {{ 'default.css' | asset_url | stylesheet_tag: 'screen' }}
+       </head><body><p>DIAG</p><div>{{ content }}</div>
+       {{ store_script_tag }}</body></html>
+
+   Replace \`templates/index.html\` with a single \`<p>index OK</p>\`.
+2. Upload, activate the new import, reload. If "DIAG / index OK" appears,
+   the pipeline is fine. If not, the trigger is in your zip structure,
+   activation, or configs.
+3. Add pieces back in this order, one per upload cycle (build → repack →
+   upload → activate → reload):
+   snippet includes, real header/nav markup, \`<title>\` conditionals, real
+   page templates, JS asset, then \`<meta>\` tags one at a time.
+4. The moment the storefront breaks, the last thing you added is the trigger.
+
+Keep a visible marker in every intermediate build so you always know which
+upload the store is actually serving.
+
 ---
 
 ## Limited Run Theme API — reference

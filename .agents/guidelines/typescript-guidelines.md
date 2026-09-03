@@ -37,6 +37,17 @@ Do not enforce a maximum line length — leave `printWidth` / `max-len` unset (o
 
 Run `pnpm exec eslint .` for linting and `pnpm exec prettier --write .` for formatting.
 
+### Git hooks: husky
+
+Every new project must use [husky](https://typicode.github.io/husky/) to manage git hooks, so lint/format/typecheck run automatically before commits reach the remote. Pair it with [lint-staged](https://github.com/lint-staged/lint-staged) so hooks only touch changed files.
+
+```bash
+pnpm add -D husky lint-staged
+pnpm exec husky init
+```
+
+At minimum, wire a `pre-commit` hook that runs `pnpm exec lint-staged`. Do not skip hooks with `--no-verify`; if a hook fails, fix the underlying issue.
+
 ## Coding Style
 
 ### No banner separators

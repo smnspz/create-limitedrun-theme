@@ -1,6 +1,6 @@
 {
   "name": "create-limitedrun-theme",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Scaffold a new Limited Run theme project",
   "license": "MIT",
   "type": "module",

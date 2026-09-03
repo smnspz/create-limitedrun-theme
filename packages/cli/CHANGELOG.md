@@ -1,5 +1,11 @@
 # @limitedrun/cli
 
+## 0.2.1
+
+### Patch Changes
+
+- 43aaaef: `limitedrun dev` now rotates to the next available port when the requested one is already in use (up to 20 consecutive ports), instead of failing on `EADDRINUSE`.
+
 ## 0.2.0
 
 ### Minor Changes

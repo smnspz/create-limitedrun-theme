@@ -1,6 +1,6 @@
 {
   "name": "@limitedrun/cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Local dev server and build tooling for Limited Run themes",
   "license": "MIT",
   "type": "module",

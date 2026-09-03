@@ -113,12 +113,16 @@ ESM-only, TypeScript strict.
 
 ## Conventions
 
-- **Comments & JSDoc**: `.agents/guidelines/typescript-guidelines.md` is binding.
-  Every named module-level function/method gets a JSDoc block (summary, blank
-  line, `@param`/`@returns`, `@throws`/`@yields` where relevant). Function bodies
-  get verb-first **block** comments, blank-line separated, essence only — no
-  per-line narration of obvious code, no parenthetical enumerations.
-  `packages/cli/src/commands/build.ts` is the canonical example.
+- **TypeScript / JavaScript style**: `.agents/guidelines/typescript-guidelines.md`
+  is the binding style guide for this repo and any new project — covers Node
+  version selection via nvm, pnpm as the package manager, ESLint + Prettier
+  (no line-length limit), husky + lint-staged for git hooks, and the full
+  coding-style rules (no banner separators, verb-first `//` block comments
+  blank-line separated, `// else` after early returns, JSDoc on every
+  function/method/class with type tags omitted in `.ts`/`.tsx` and included in
+  `.js`/`.jsx`, and no `{/* */}` inline comments in JSX).
+  `packages/cli/src/commands/build.ts` is the canonical example for comments +
+  JSDoc.
 - **Commits**: Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`,
   `refactor:`). Commit per completed unit of work, not big batches.
 - **Pre-commit hook** (Husky): runs lint-staged (Prettier) → `npm run typecheck`

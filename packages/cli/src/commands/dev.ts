@@ -196,13 +196,57 @@ export async function runDev(
     for (const notify of subscribers) notify();
   });
 
-  // Start listening
-  const server = serve({ fetch: app.fetch, port: options.port });
-  process.stdout.write(`\n  limitedrun dev  →  http://localhost:${options.port}\n\n`);
+  // Start listening; on EADDRINUSE, rotate to the next port
+  const server = await listenWithRotation(app.fetch, options.port);
 
   // Return a function that stops the watcher and the server
   return async () => {
     await watcher.close();
     server.close();
   };
+}
+
+/**
+ * Start the Hono server, rotating to the next port if the requested one is in use.
+ *
+ * @param fetch - Hono app fetch handler.
+ * @param startPort - Preferred port to try first.
+ * @param maxAttempts - How many consecutive ports to try before giving up.
+ * @returns The listening server instance bound to the first free port.
+ * @throws {Error} If no free port is found within `maxAttempts`.
+ */
+async function listenWithRotation(
+  fetch: Hono['fetch'],
+  startPort: number,
+  maxAttempts = 20,
+): Promise<ReturnType<typeof serve>> {
+  // Try each port in the range until one binds successfully
+  for (let i = 0; i < maxAttempts; i++) {
+    const port = startPort + i;
+
+    try {
+      // Bind a listening server to the current port
+      const server = await new Promise<ReturnType<typeof serve>>((resolve, reject) => {
+        const s = serve({ fetch, port }, () => resolve(s));
+        s.once('error', reject);
+      });
+
+      // Announce the listening URL
+      process.stdout.write(`\n  limitedrun dev  →  http://localhost:${port}\n\n`);
+
+      // Return the running server
+      return server;
+    } catch (err) {
+      // Rethrow anything that isn't a port-in-use error
+      if ((err as NodeJS.ErrnoException).code !== 'EADDRINUSE') throw err;
+
+      // else
+
+      // Log the rotation to the next port
+      process.stdout.write(`  port ${port} in use, trying ${port + 1}…\n`);
+    }
+  }
+
+  // Fail after exhausting the range
+  throw new Error(`no free port in range ${startPort}-${startPort + maxAttempts - 1}`);
 }

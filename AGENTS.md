@@ -113,7 +113,7 @@ ESM-only, TypeScript strict.
 
 ## Conventions
 
-- **Comments & JSDoc**: `.agents/guidelines/javascript-functions.md` is binding.
+- **Comments & JSDoc**: `.agents/guidelines/typescript-guidelines.md` is binding.
   Every named module-level function/method gets a JSDoc block (summary, blank
   line, `@param`/`@returns`, `@throws`/`@yields` where relevant). Function bodies
   get verb-first **block** comments, blank-line separated, essence only — no
